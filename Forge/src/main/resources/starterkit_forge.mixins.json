@@ -2,6 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.natamus.starterkit.forge.mixin",
+  "plugin": "com.natamus.collective.forge.mixin.plugin.ForgeMixinConfigPlugin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "starterkit_forge.refmap.json",
   "mixins": [

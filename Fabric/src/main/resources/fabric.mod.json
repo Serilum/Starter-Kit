@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
   "id": "starterkit",
-  "version": "5.3",
+  "version": "5.4",
 
   "name": "Starter Kit",
   "description": "Gives players who join the world for the first time configurable starter gear.",
   "authors": [ "Rick South" ],
   "contact": {
-    "homepage": "https://curseforge.com/minecraft/mc-mods/starter-kit",
-    "sources": "https://github.com/ricksouth/serilum-mc-mod-sources/tree/main/sources/Starter%20Kit",
-    "issues": "https://github.com/ricksouth/serilum-mc-mods/labels/Mod:%20Starter%20Kit"
+    "homepage": "https://serilum.com/mod/starter-kit",
+    "sources": "https://github.com/Serilum/Starter-Kit",
+    "issues": "https://github.com/Serilum/.issue-tracker/labels/Mod:%20Starter%20Kit"
   },
 
   "license": "All Right Reserved",
@@ -23,7 +23,7 @@
     "fabric": "*",
     "minecraft": ">=1.20",
     "java": ">=17",
-    "collective": ">=7.3"
+    "collective": ">=7.21"
   },
 
   "custom": {

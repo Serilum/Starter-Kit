@@ -1,14 +1,14 @@
 modLoader="javafml"
 loaderVersion="*"
 license="All rights reserved"
-issueTrackerURL="https://github.com/ricksouth/serilum-mc-mods/labels/Mod:%20Starter%20Kit"
+issueTrackerURL="https://github.com/Serilum/.issue-tracker/labels/Mod:%20Starter%20Kit"
 logoFile="icon.png"
 
 [[mods]]
 modId="starterkit"
-version="5.3"
+version="5.4"
 displayName="Starter Kit"
-displayURL="https://curseforge.com/minecraft/mc-mods/starter-kit"
+displayURL="https://serilum.com/mod/starter-kit"
 authors="Rick South"
 description='''Gives players who join the world for the first time configurable starter gear.
 '''
@@ -21,13 +21,15 @@ If you would like to contribute too, check out https://ricksouth.com/donate. App
 
 [[dependencies.starterkit]]
     modId="collective"
+    type="required"
     mandatory=true
-    versionRange="[7.3,)"
+    versionRange="[7.21,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.starterkit]]
     modId="minecraft"
+    type="required"
     mandatory=true
     versionRange="[1.19.2]"
     ordering="NONE"

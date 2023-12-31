@@ -25,10 +25,10 @@ public class FirstSpawnEvent {
 
 		final Player player = (Player)entity;
 		TaskFunctions.enqueueCollectiveTask(world.getServer(), () -> {
-			if (PlayerFunctions.isJoiningWorldForTheFirstTime(player, Reference.MOD_ID, false)) {
+			if (PlayerFunctions.isJoiningWorldForTheFirstTime(player, Reference.MOD_ID, false, ConfigHandler.enablePlayerMustBeNearSpawnForKitCheck)) {
 				Util.setStarterKit(player);
 			}
-		}, 5);
+		}, 10);
 	}
 	
 	public static void onCommand(String string, ParseResults<CommandSourceStack> parse) {

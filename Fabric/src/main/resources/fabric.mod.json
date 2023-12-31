@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "starterkit",
-  "version": "5.4",
+  "version": "5.5",
 
   "name": "Starter Kit",
   "description": "Gives players who join the world for the first time configurable starter gear.",
@@ -23,7 +23,7 @@
     "fabric": "*",
     "minecraft": ">=1.19",
     "java": ">=17",
-    "collective": ">=7.21"
+    "collective": ">=7.30"
   },
 
   "custom": {

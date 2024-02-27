@@ -3,19 +3,22 @@ package com.natamus.starterkit.events;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.context.CommandContextBuilder;
-import com.natamus.collective.functions.PlayerFunctions;
-import com.natamus.collective.functions.TaskFunctions;
 import com.natamus.starterkit.config.ConfigHandler;
-import com.natamus.starterkit.util.Reference;
-import com.natamus.starterkit.util.Util;
+import com.natamus.starterkit.functions.StarterDataFunctions;
+import com.natamus.starterkit.functions.StarterGearFunctions;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-public class FirstSpawnEvent {
-	public static void onSpawn(Level world, Entity entity) {
-		if (world.isClientSide) {
+public class StarterServerEvents {
+	public static void onServerStarting(MinecraftServer minecraftServer) {
+		StarterDataFunctions.init(minecraftServer);
+	}
+
+	public static void onSpawn(Level level, Entity entity) {
+		if (level.isClientSide) {
 			return;
 		}
 		
@@ -23,12 +26,7 @@ public class FirstSpawnEvent {
 			return;
 		}
 
-		final Player player = (Player)entity;
-		TaskFunctions.enqueueCollectiveTask(world.getServer(), () -> {
-			if (PlayerFunctions.isJoiningWorldForTheFirstTime(player, Reference.MOD_ID, false, ConfigHandler.enablePlayerMustBeNearSpawnForKitCheck)) {
-				Util.setStarterKit(player);
-			}
-		}, 10);
+		StarterGearFunctions.initStarterKitHandle(level, (Player)entity, null);
 	}
 	
 	public static void onCommand(String string, ParseResults<CommandSourceStack> parse) {
@@ -52,9 +50,7 @@ public class FirstSpawnEvent {
 				Level level = player.level();
 
 				if (!level.isClientSide) {
-					TaskFunctions.enqueueCollectiveTask(level.getServer(), () -> {
-						Util.setStarterKit(player);
-					}, 40);
+					StarterGearFunctions.initStarterKitHandle(level, player, null);
 				}
 			}
 		}

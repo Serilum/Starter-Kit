@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "starterkit",
-  "version": "5.5",
+  "version": "6.0",
 
   "name": "Starter Kit",
   "description": "Gives players who join the world for the first time configurable starter gear.",
@@ -16,14 +16,17 @@
   "icon": "icon.png",
 
   "environment": "*",
-  "entrypoints": { "main": [ "com.natamus.starterkit.ModFabric" ], "modmenu": [ "com.natamus.starterkit.fabric.config.IntegrateModMenu" ] },
+  "entrypoints": { "main": [ "com.natamus.starterkit.ModFabric" ], "client": [ "com.natamus.starterkit.ModFabricClient" ], "modmenu": [ "com.natamus.starterkit.fabric.config.IntegrateModMenu" ] },
+  "mixins": [
+    "starterkit.mixins.json"
+  ],
 
   "depends": {
     "fabricloader": ">=0.12.5",
     "fabric": "*",
     "minecraft": ">=1.19",
     "java": ">=17",
-    "collective": ">=7.30"
+    "collective": ">=7.36"
   },
 
   "custom": {
@@ -41,18 +44,15 @@
 	  "If you would like to contribute too, check out https://ricksouth.com/donate.",
 	  " ",
 	  "Membership sponsors:",
-	  " Adam E",
 	  " Alister",
+	  " Andrean Olgo",
 	  " aternosorg",
 	  " Cherriesaurus",
-	  " FireStriker",
-	  " Greg Johnson",
+	  " Jack",
 	  " Kreezxil",
 	  " Michael W. S.",
 	  " Mir3JonCZ",
-	  " Rebecca Hb.",
 	  " Shana Gitnick",
-	  " silver Bowsman",
 	  " Tyler Behl"
   ]
 }

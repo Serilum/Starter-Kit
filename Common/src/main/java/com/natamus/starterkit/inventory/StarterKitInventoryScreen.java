@@ -80,11 +80,11 @@ public class StarterKitInventoryScreen extends StarterKitEffectRenderingInventor
     }
 
     private void setupButtons() {
-		Button previousKitButton = new Button(this.width/2 + 13, this.height/2 - 21, 30, 16, Component.literal(" < "), (button) -> {
+		Button previousKitButton = new Button(this.width/2 + 13, this.height/2 - 23, 30, 20, Component.literal(" < "), (button) -> {
             StarterClientFunctions.cycleChooseKitScreen(this.minecraft.player, false);
 		});
 
-		Button nextKitButton = new Button(this.width/2 + 47, this.height/2 - 21, 30, 16, Component.literal(" > "), (button) -> {
+		Button nextKitButton = new Button(this.width/2 + 47, this.height/2 - 23, 30, 20, Component.literal(" > "), (button) -> {
 			StarterClientFunctions.cycleChooseKitScreen(this.minecraft.player, true);
 		});
 

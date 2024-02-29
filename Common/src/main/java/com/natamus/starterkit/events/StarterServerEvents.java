@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContextBuilder;
 import com.natamus.starterkit.config.ConfigHandler;
 import com.natamus.starterkit.functions.StarterDataFunctions;
 import com.natamus.starterkit.functions.StarterGearFunctions;
+import com.natamus.starterkit.util.Reference;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
@@ -26,7 +27,12 @@ public class StarterServerEvents {
 			return;
 		}
 
-		StarterGearFunctions.initStarterKitHandle(level, (Player)entity, null);
+		Player player = (Player)entity;
+		if (player.getTags().contains("collective.firstJoin." + Reference.MOD_ID)) { // Version < 5.5 backwards compatibility
+			return;
+		}
+
+		StarterGearFunctions.initStarterKitHandle(level, player, null);
 	}
 	
 	public static void onCommand(String string, ParseResults<CommandSourceStack> parse) {

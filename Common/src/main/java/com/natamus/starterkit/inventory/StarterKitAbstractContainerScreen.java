@@ -102,8 +102,9 @@ public abstract class StarterKitAbstractContainerScreen<T extends AbstractContai
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         int i = this.leftPos;
         int j = this.topPos;
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        this.renderBg(guiGraphics, partialTick, mouseX, mouseY);
         RenderSystem.disableDepthTest();
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate((float)i, (float)j, 0.0F);
         this.hoveredSlot = null;

@@ -32,7 +32,12 @@ public class StarterDataFunctions {
 			writeTrackingMapToJsonFile(minecraftServer);
 		}
 
-		StarterDataFunctions.processExistingTrackingData(minecraftServer);
+		try {
+			StarterDataFunctions.processExistingTrackingData(minecraftServer);
+		}
+		catch (NullPointerException ex) {
+			Constants.logger.warn(Constants.logPrefix + "Unable to process existing tracking data.");
+		}
 	}
 
 	private static void setupTrackingMap() {
@@ -80,22 +85,20 @@ public class StarterDataFunctions {
 		}
 	}
 
-	public static void processExistingTrackingData(MinecraftServer minecraftServer) {
+	public static void processExistingTrackingData(MinecraftServer minecraftServer) throws NullPointerException {
+		String playerDataFolder = WorldFunctions.getWorldPath(minecraftServer) + File.separator + "playerdata";
+		File playerDataDir = new File(playerDataFolder);
+
 		boolean updatedTracking = false;
-		if (minecraftServer.isDedicatedServer()) {
-			String playerDataFolder = WorldFunctions.getWorldPath(minecraftServer) + File.separator + "playerdata";
 
-			File playerDataDir = new File(playerDataFolder);
-			File[] files = playerDataDir.listFiles((File pathname) -> pathname.getName().endsWith(".dat"));
+		File[] files = playerDataDir.listFiles((File pathname) -> pathname.getName().endsWith(".dat"));
+		for (File f : files) {
+			String fileName = f.getName();
+			String rawUUID = fileName.replace(".dat", "");
 
-			for (File f : files) {
-				String fileName = f.getName();
-				String rawUUID = fileName.replace(".dat", "");
-
-				if (!Variables.trackingMap.containsKey(rawUUID)) {
-					Variables.trackingMap.get("multiplayer").put(rawUUID, true);
-					updatedTracking = true;
-				}
+			if (!Variables.trackingMap.containsKey(rawUUID)) {
+				Variables.trackingMap.get("multiplayer").put(rawUUID, true);
+				updatedTracking = true;
 			}
 		}
 
@@ -111,13 +114,12 @@ public class StarterDataFunctions {
 		}
 
 		MinecraftServer minecraftServer = level.getServer();
-		if (minecraftServer.isDedicatedServer()) {
-			String rawUUID = player.getStringUUID();
-			Variables.trackingMap.get("multiplayer").put(rawUUID, false);
-		}
-		else {
+		if (!minecraftServer.isDedicatedServer()) {
 			Variables.trackingMap.get("singleplayer").replaceAll((r, v) -> false);
 		}
+
+		String rawUUID = player.getStringUUID();
+		Variables.trackingMap.get("multiplayer").put(rawUUID, false);
 
 		writeTrackingMapToJsonFile(minecraftServer);
 	}

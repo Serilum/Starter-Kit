@@ -32,7 +32,12 @@ public class StarterDataFunctions {
 			writeTrackingMapToJsonFile(minecraftServer);
 		}
 
-		StarterDataFunctions.processExistingTrackingData(minecraftServer);
+		try {
+			StarterDataFunctions.processExistingTrackingData(minecraftServer);
+		}
+		catch (NullPointerException ex) {
+			Constants.logger.warn(Constants.logPrefix + "Unable to process existing tracking data.");
+		}
 	}
 
 	private static void setupTrackingMap() {
@@ -80,7 +85,7 @@ public class StarterDataFunctions {
 		}
 	}
 
-	public static void processExistingTrackingData(MinecraftServer minecraftServer) {
+	public static void processExistingTrackingData(MinecraftServer minecraftServer) throws NullPointerException {
 		String playerDataFolder = WorldFunctions.getWorldPath(minecraftServer) + File.separator + "playerdata";
 		File playerDataDir = new File(playerDataFolder);
 

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "starterkit",
-  "version": "6.2",
+  "version": "6.3",
 
   "name": "Starter Kit",
   "description": "Gives players who join the world for the first time configurable starter gear.",
@@ -41,7 +41,7 @@
 	  " ",
 	  "Thank you very much to my Membership sponsors for supporting the development of this mod!",
 	  " ",
-	  "If you would like to contribute too, check out https://ricksouth.com/donate.",
+	  "If you would like to contribute too, check out https://serilum.com/donate.",
 	  " ",
 	  "Membership sponsors:",
 	  " Alister",

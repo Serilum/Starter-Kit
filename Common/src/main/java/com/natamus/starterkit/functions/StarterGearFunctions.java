@@ -137,7 +137,7 @@ public class StarterGearFunctions {
 		}
 
 		if (commandPlayer != null) {
-			StringFunctions.sendMessage(commandPlayer, player.getName().getString() + " has been given the '" + Util.formatKitName(kitName) + "' starter kit!", ChatFormatting.DARK_GREEN, true);
+			MessageFunctions.sendMessage(commandPlayer, player.getName().getString() + " has been given the '" + Util.formatKitName(kitName) + "' starter kit!", ChatFormatting.DARK_GREEN, true);
 		}
 
 		StarterCheckFunctions.addPlayerToTrackingMap(player);

@@ -78,9 +78,18 @@ public class StarterClientFunctions {
 			Constants.logger.warn(Constants.logPrefix + "Unable to show the choose kit screen, starter gear entries are empty.");
 			return;
 		}
+		else if (kitIndex >= VariablesClient.cachedStarterGearEntries.size()) {
+			Constants.logger.warn(Constants.logPrefix + "Unable to show the choose kit screen, kit index higher than the cached starter gear entries.");
+			return;
+		}
 
 		String kitName = StarterGearFunctions.getActiveKitNames(VariablesClient.cachedStarterGearEntries).get(kitIndex);
 		String gearString = Variables.starterGearEntries.get(kitName);
+
+		if (gearString == null) {
+			Constants.logger.warn(Constants.logPrefix + "Unable to show the choose kit screen, gearString is null from kit name '" + kitName + "' and kit index " + kitIndex + ".");
+			return;
+		}
 
 		GearFunctions.setInventoryFromGearString(inventory, gearString);
 

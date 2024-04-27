@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "id": "starterkit",
+  "version": "6.5",
+
+  "name": "Starter Kit",
+  "description": "Gives players who join the world for the first time configurable starter gear.",
+  "authors": [ "Rick South" ],
+  "contact": {
+    "homepage": "https://serilum.com/mod/starter-kit",
+    "sources": "https://github.com/Serilum/Starter-Kit",
+    "issues": "https://github.com/Serilum/.issue-tracker/labels/Mod:%20Starter%20Kit"
+  },
+
+  "license": "All Right Reserved",
+  "icon": "icon.png",
+
+  "environment": "*",
+  "entrypoints": { "main": [ "com.natamus.starterkit.ModFabric" ], "client": [ "com.natamus.starterkit.ModFabricClient" ], "modmenu": [ "com.natamus.starterkit.fabric.config.IntegrateModMenu" ] },
+  "mixins": [
+    "starterkit.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.12.5",
+    "fabric": "*",
+    "minecraft": ">=1.20",
+    "java": ">=17",
+    "collective": ">=7.52"
+  },
+
+  "custom": {
+    "modmenu": {
+      "links": {
+        "Donate <3" : "https://ricksouth.com/donate"
+      }
+    }
+  },
+
+  "contributors": [
+	  " ",
+	  "Thank you very much to my Membership sponsors for supporting the development of this mod!",
+	  " ",
+	  "If you would like to contribute too, check out https://serilum.com/donate.",
+	  " ",
+	  "Membership sponsors:",
+	  " Alister",
+	  " Andrean Olgo",
+	  " aternosorg",
+	  " BirdieMiner",
+	  " Cherriesaurus",
+	  " Jack",
+	  " Jeremy Langford",
+	  " Michael W. S.",
+	  " pepe1191",
+	  " Shana Gitnick",
+	  " Tyler Behl"
+  ]
+}

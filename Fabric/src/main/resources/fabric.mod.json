@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "starterkit",
-  "version": "6.5",
+  "version": "6.7",
 
   "name": "Starter Kit",
   "description": "Gives players who join the world for the first time configurable starter gear.",
@@ -26,7 +26,7 @@
     "fabric": "*",
     "minecraft": ">=1.19",
     "java": ">=17",
-    "collective": ">=7.36"
+    "collective": ">=7.54"
   },
 
   "custom": {
@@ -47,11 +47,12 @@
 	  " Alister",
 	  " Andrean Olgo",
 	  " aternosorg",
+	  " BirdieMiner",
 	  " Cherriesaurus",
 	  " Jack",
-	  " Kreezxil",
+	  " Jeremy Langford",
 	  " Michael W. S.",
-	  " Mir3JonCZ",
+	  " pepe1191",
 	  " Shana Gitnick",
 	  " Tyler Behl"
   ]

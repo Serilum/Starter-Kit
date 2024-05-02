@@ -10,6 +10,10 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 public class ForgeStarterClientEvents {
 	@SubscribeEvent
 	public void onClientTick(TickEvent.ClientTickEvent e) {
+		if (!e.phase.equals(TickEvent.Phase.START)) {
+			return;
+		}
+
 		StarterClientEvents.onClientTick();
 	}
 }

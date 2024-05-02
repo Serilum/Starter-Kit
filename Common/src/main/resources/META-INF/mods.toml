@@ -6,7 +6,7 @@ logoFile="icon.png"
 
 [[mods]]
 modId="starterkit"
-version="6.6"
+version="6.7"
 displayName="Starter Kit"
 displayURL="https://serilum.com/mod/starter-kit"
 authors="Rick South"
@@ -22,7 +22,7 @@ If you would like to contribute too, check out https://serilum.com/donate. Appre
 [[dependencies.starterkit]]
     modId="collective"
     mandatory=true
-    versionRange="[7.54,)"
+    versionRange="[7.55,)"
     ordering="NONE"
     side="BOTH"
 

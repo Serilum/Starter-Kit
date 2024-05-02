@@ -9,7 +9,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 @EventBusSubscriber(Dist.CLIENT)
 public class NeoForgeStarterClientEvents {
 	@SubscribeEvent
-	public static void onClientTick(ClientTickEvent e) {
+	public static void onClientTick(ClientTickEvent.Pre e) {
 		StarterClientEvents.onClientTick();
 	}
 }

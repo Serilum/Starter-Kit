@@ -25,7 +25,7 @@ import java.util.List;
 public class CommandStarterkit {
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 		for (String commandPrefix : Constants.commandPrefixes) {
-			dispatcher.register(Commands.literal(commandPrefix).requires((commandSourceStack) -> commandSourceStack.isPlayer())
+			dispatcher.register(Commands.literal(commandPrefix)
 				.executes((command) -> {
 					return showCommandHelp(command.getSource());
 				})
@@ -38,17 +38,30 @@ public class CommandStarterkit {
 				.then(Commands.argument("kit_name", StringArgumentType.string()).suggests(StarterCommandFunctions.activeKitSuggestions)
 				.executes((command) -> {
 					CommandSourceStack source = command.getSource();
-					Player player = source.getPlayer();
 
 					String kitName = Util.findCorrectKitNameFromInput(StringArgumentType.getString(command, "kit_name"));
 
-					return StarterGearFunctions.showKitInformation(player, kitName);
+					return StarterGearFunctions.showKitInformation(source.getLevel(), source, null, kitName);
 				})))
+				.then(Commands.literal("info")
+				.then(Commands.argument("kit_name", StringArgumentType.string()).suggests(StarterCommandFunctions.activeKitSuggestions)
+				.then(Commands.argument("target", EntityArgument.player())
+				.executes((command) -> {
+					Player targetPlayer = EntityArgument.getPlayer(command, "target");
+					String kitName = Util.findCorrectKitNameFromInput(StringArgumentType.getString(command, "kit_name"));
+
+					return StarterGearFunctions.showKitInformation(targetPlayer.level(), null, targetPlayer, kitName);
+				}))))
 
 				.then(Commands.literal("choose")
 				.then(Commands.argument("kit_name", StringArgumentType.string()).suggests(StarterCommandFunctions.activeKitSuggestions)
 				.executes((command) -> {
 					CommandSourceStack source = command.getSource();
+					if (!source.isPlayer()) {
+						MessageFunctions.sendMessage(source, "This command can only be ran as a player.", ChatFormatting.RED);
+						return 0;
+					}
+
 					Player player = source.getPlayer();
 
 					if (!StarterCheckFunctions.shouldPlayerReceiveStarterKit(player)) {
@@ -146,8 +159,7 @@ public class CommandStarterkit {
 					CommandSourceStack source = command.getSource();
 					if (!permissionCheck(source)) { return 0; }
 
-					Player commandPlayer = source.getPlayer();
-					Level level = commandPlayer.level();
+					Level level = source.getLevel();
 					if (level.isClientSide) {
 						return 1;
 					}
@@ -155,7 +167,7 @@ public class CommandStarterkit {
 					Player targetPlayer = EntityArgument.getPlayer(command, "target");
 
 					StarterDataFunctions.resetTrackingForPlayer(targetPlayer);
-					StarterGearFunctions.initStarterKitHandle(level, targetPlayer, commandPlayer);
+					StarterGearFunctions.initStarterKitHandle(level, targetPlayer, source);
 
 					if (ConfigHandler.randomizeMultipleKitsToggle && Variables.starterGearEntries.size() > 1) {
 						MessageFunctions.sendMessage(source, targetPlayer.getName().getString() + " has been given the choice for a new starter kit!", ChatFormatting.DARK_GREEN, true);
@@ -169,8 +181,7 @@ public class CommandStarterkit {
 					CommandSourceStack source = command.getSource();
 					if (!permissionCheck(source)) { return 0; }
 
-					Player commandPlayer = source.getPlayer();
-					Level level = commandPlayer.level();
+					Level level = source.getLevel();
 					if (level.isClientSide) {
 						return 1;
 					}
@@ -179,7 +190,7 @@ public class CommandStarterkit {
 					String kitName = Util.findCorrectKitNameFromInput(StringArgumentType.getString(command, "kit_name"));
 
 					StarterDataFunctions.resetTrackingForPlayer(targetPlayer);
-					StarterGearFunctions.initStarterKitHandle(level, targetPlayer, commandPlayer, kitName);
+					StarterGearFunctions.initStarterKitHandle(level, targetPlayer, source, kitName);
 
 					if (ConfigHandler.randomizeMultipleKitsToggle && Variables.starterGearEntries.size() > 1) {
 						MessageFunctions.sendMessage(source, targetPlayer.getName().getString() + " has been given the choice for a new starter kit!", ChatFormatting.DARK_GREEN, true);
@@ -215,7 +226,7 @@ public class CommandStarterkit {
 								MessageFunctions.sendMessage(source, " > If 2 more kits are added.", ChatFormatting.DARK_GRAY);
 							}
 							else {
-								MessageFunctions.sendMessage(source, " > If 1 more kit is added. For now all players will receive the '" + activeKitNames.get(0) + "' kit without a choice screen.", ChatFormatting.DARK_GRAY);
+								MessageFunctions.sendMessage(source, " > If 1 more kit is added. For now all players will receive the '" + activeKitNames.getFirst() + "' kit without a choice screen.", ChatFormatting.DARK_GRAY);
 							}
 						}
 					}
@@ -261,8 +272,7 @@ public class CommandStarterkit {
 					CommandSourceStack source = command.getSource();
 					if (!permissionCheck(source)) { return 0; }
 
-					Player player = source.getPlayer();
-					Level level = player.level();
+					Level level = source.getLevel();
 					if (level.isClientSide) {
 						return 0;
 					}
@@ -318,6 +328,11 @@ public class CommandStarterkit {
 
 	private static int processCommand(CommandSourceStack source, String kitName, boolean adding) {
 		if (!permissionCheck(source)) { return 0; }
+
+		if (!source.isPlayer()) {
+			MessageFunctions.sendMessage(source, "This command can only be ran as a player.", ChatFormatting.RED);
+			return 0;
+		}
 
 		Player player = source.getPlayer();
 

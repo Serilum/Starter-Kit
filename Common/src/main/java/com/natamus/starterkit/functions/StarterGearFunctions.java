@@ -1,7 +1,10 @@
 package com.natamus.starterkit.functions;
 
 import com.natamus.collective.data.GlobalVariables;
-import com.natamus.collective.functions.*;
+import com.natamus.collective.functions.GearFunctions;
+import com.natamus.collective.functions.ItemFunctions;
+import com.natamus.collective.functions.MessageFunctions;
+import com.natamus.collective.functions.TaskFunctions;
 import com.natamus.collective.implementations.networking.api.Dispatcher;
 import com.natamus.starterkit.config.ConfigHandler;
 import com.natamus.starterkit.data.Constants;
@@ -10,7 +13,9 @@ import com.natamus.starterkit.networking.packets.ToClientAskIfModIsInstalledPack
 import com.natamus.starterkit.networking.packets.ToClientSelectFirstSlotPacket;
 import com.natamus.starterkit.util.Util;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -29,14 +34,14 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 public class StarterGearFunctions {
-	public static void initStarterKitHandle(Level level, Player player, @Nullable Player commandPlayer) {
-		initStarterKitHandle(level, player, commandPlayer, "");
+	public static void initStarterKitHandle(Level level, Player player, @Nullable CommandSourceStack commandSource) {
+		initStarterKitHandle(level, player, commandSource, "");
 	}
-	public static void initStarterKitHandle(Level level, Player player, @Nullable Player commandPlayer, String kitName) {
+	public static void initStarterKitHandle(Level level, Player player, @Nullable CommandSourceStack commandSource, String kitName) {
 		final UUID uuid = player.getUUID();
 
 		TaskFunctions.enqueueCollectiveTask(level.getServer(), () -> {
-			if (StarterCheckFunctions.shouldPlayerReceiveStarterKit(level, player) || commandPlayer != null) {
+			if (StarterCheckFunctions.shouldPlayerReceiveStarterKit(level, player) || commandSource != null) {
 				if (ConfigHandler.usePotionEffectsInStarterKit) {
 					player.removeAllEffects();
 				}
@@ -46,17 +51,17 @@ public class StarterGearFunctions {
 
 					TaskFunctions.enqueueCollectiveTask(level.getServer(), () -> {
 						if (!Variables.playersWithModInstalledOnClient.contains(uuid)) {
-							StarterGearFunctions.chooseOrGiveStarterKit(player, commandPlayer, kitName);
+							chooseOrGiveStarterKit(player, commandSource, kitName);
 						}
 					}, 100);
 				}
 				else {
-					StarterGearFunctions.giveStarterKit(player, commandPlayer, kitName);
+					giveStarterKit(player, commandSource, kitName);
 				}
 			}
 		}, 10);
 	}
-	public static void chooseOrGiveStarterKit(Player player, @Nullable Player commandPlayer, String kitName) {
+	public static void chooseOrGiveStarterKit(Player player, @Nullable CommandSourceStack commandSource, String kitName) {
 		int kitCount = Variables.starterGearEntries.size();
 		if (kitCount == 0) {
 			return;
@@ -67,7 +72,7 @@ public class StarterGearFunctions {
 			return;
 		}
 
-		giveStarterKit(player, commandPlayer, kitName);
+		giveStarterKit(player, commandSource, kitName);
 	}
 
 	public static void chooseStarterKitViaCommands(Player player) {
@@ -82,10 +87,10 @@ public class StarterGearFunctions {
 		MessageFunctions.sendMessage(player, " Available kits: " + StringUtils.join(getActiveKitNames(), ", "), ChatFormatting.GRAY, true);
 	}
 
-	public static String giveStarterKit(Player player, @Nullable Player commandPlayer) {
-		return giveStarterKit(player, commandPlayer, "");
+	public static String giveStarterKit(Player player, @Nullable CommandSourceStack commandSource) {
+		return giveStarterKit(player, commandSource, "");
 	}
-	public static String giveStarterKit(Player player, @Nullable Player commandPlayer, String kitName) {
+	public static String giveStarterKit(Player player, @Nullable CommandSourceStack commandSource, String kitName) {
 		if (Variables.starterGearEntries.isEmpty()) {
 			return null;
 		}
@@ -136,8 +141,8 @@ public class StarterGearFunctions {
 			}
 		}
 
-		if (commandPlayer != null) {
-			MessageFunctions.sendMessage(commandPlayer, player.getName().getString() + " has been given the '" + Util.formatKitName(kitName) + "' starter kit!", ChatFormatting.DARK_GREEN, true);
+		if (commandSource != null) {
+			MessageFunctions.sendMessage(commandSource, player.getName().getString() + " has been given the '" + Util.formatKitName(kitName) + "' starter kit!", ChatFormatting.DARK_GREEN, true);
 		}
 
 		StarterCheckFunctions.addPlayerToTrackingMap(player);
@@ -299,7 +304,7 @@ public class StarterGearFunctions {
 		for (File file : files) {
 			String kitName = file.getName().replace(".txt", "");
 			String kitDescription = Files.readString(Paths.get(file.getAbsolutePath()));
-			Variables.starterKitDescriptions.put(kitName, kitDescription);
+			Variables.starterKitDescriptions.put(kitName.toLowerCase(), kitDescription);
 		}
 	}
 
@@ -345,18 +350,27 @@ public class StarterGearFunctions {
 		return inactiveKitNames;
 	}
 
-	public static int showKitInformation(Player player, String kitName) {
+	public static int showKitInformation(Level level, CommandSourceStack targetSource, Player targetPlayer, String kitName) {
 		String kitDescription = "";
-		if (Variables.starterKitDescriptions.containsKey(kitName)) {
-			kitDescription = Variables.starterKitDescriptions.get(kitName);
+		if (Variables.starterKitDescriptions.containsKey(kitName.toLowerCase())) {
+			kitDescription = Variables.starterKitDescriptions.get(kitName.toLowerCase());
 
 			if (kitDescription.contains("/config/starterkit/description/")) {
 				kitDescription = "N/A";
 			}
 		}
 
-		MessageFunctions.sendMessage(player, Component.literal("Name: ").withStyle(ChatFormatting.DARK_GREEN).append(Component.literal(Util.formatKitName(kitName)).withStyle(ChatFormatting.GRAY)), true);
-		MessageFunctions.sendMessage(player, Component.literal("Description: ").withStyle(ChatFormatting.DARK_GREEN).append(Component.literal(kitDescription).withStyle(ChatFormatting.GRAY)));
+		MutableComponent nameComponent = Component.literal("Name: ").withStyle(ChatFormatting.DARK_GREEN).append(Component.literal(Util.formatKitName(kitName)).withStyle(ChatFormatting.GRAY));
+		MutableComponent descriptionComponent = Component.literal("Description: ").withStyle(ChatFormatting.DARK_GREEN).append(Component.literal(kitDescription).withStyle(ChatFormatting.GRAY));
+
+		if (targetSource != null) {
+			MessageFunctions.sendMessage(targetSource, nameComponent, true);
+			MessageFunctions.sendMessage(targetSource, descriptionComponent);
+		}
+		if (targetPlayer != null) {
+			MessageFunctions.sendMessage(targetPlayer, nameComponent, true);
+			MessageFunctions.sendMessage(targetPlayer, descriptionComponent);
+		}
 
 		StringBuilder kitItems = new StringBuilder();
 		if (Variables.starterGearEntries.containsKey(kitName)) {
@@ -380,7 +394,14 @@ public class StarterGearFunctions {
 			}
 		}
 
-		MessageFunctions.sendMessage(player, Component.literal("Items: ").withStyle(ChatFormatting.DARK_GREEN).append(Component.literal(kitItems.toString()).withStyle(ChatFormatting.GRAY)));
+		MutableComponent itemComponent = Component.literal("Items: ").withStyle(ChatFormatting.DARK_GREEN).append(Component.literal(kitItems.toString()).withStyle(ChatFormatting.GRAY));
+
+		if (targetSource != null) {
+			MessageFunctions.sendMessage(targetSource, itemComponent);
+		}
+		if (targetPlayer != null) {
+			MessageFunctions.sendMessage(targetPlayer, itemComponent);
+		}
 		return 1;
 	}
 }

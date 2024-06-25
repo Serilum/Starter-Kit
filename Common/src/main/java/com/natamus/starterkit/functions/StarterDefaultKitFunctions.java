@@ -66,18 +66,18 @@ public class StarterDefaultKitFunctions {
 		gearString.append("'head' : '',").append(System.lineSeparator());
 		gearString.append("'chest' : '',").append(System.lineSeparator());
 		gearString.append("'legs' : '',").append(System.lineSeparator());
-		gearString.append("'feet' : '{Count:1b,id:\"minecraft:leather_boots\",tag:{Damage:0}}',").append(System.lineSeparator());
-		gearString.append("'offhand' : '{Count:1b,id:\"minecraft:shield\",tag:{Damage:0}}',").append(System.lineSeparator());
+		gearString.append("'feet' : '{count:1,id:\"minecraft:leather_boots\"}',").append(System.lineSeparator());
+		gearString.append("'offhand' : '{count:1,id:\"minecraft:shield\"}',").append(System.lineSeparator());
 
 		List<ItemStack> emptyInventoryList = NonNullList.withSize(36, ItemStack.EMPTY);
 		for (int i = 0; i < emptyInventoryList.size(); i++) {
 			String itemString = "";
 
 			if (i == 0) {
-				itemString = "{Count:1b,id:\"minecraft:wooden_sword\",tag:{Damage:0}}";
+				itemString = "{count:1,id:\"minecraft:wooden_sword\"}";
 			}
 			else if (i == 1) {
-				itemString = "{Count:9b,id:\"minecraft:bread\"}";
+				itemString = "{count:9,id:\"minecraft:bread\"}";
 			}
 
 			gearString.append(i).append(" : '").append(itemString).append("',").append(System.lineSeparator());
@@ -91,10 +91,10 @@ public class StarterDefaultKitFunctions {
 	public static String getArcherKitGearString() {
 		StringBuilder gearString = new StringBuilder();
 
-		gearString.append("'head' : '{Count:1b,id:\"minecraft:leather_helmet\",tag:{Damage:0}}',").append(System.lineSeparator());
+		gearString.append("'head' : '{count:1,id:\"minecraft:leather_helmet\"}',").append(System.lineSeparator());
 		gearString.append("'chest' : '',").append(System.lineSeparator());
 		gearString.append("'legs' : '',").append(System.lineSeparator());
-		gearString.append("'feet' : '{Count:1b,id:\"minecraft:leather_boots\",tag:{Damage:0}}',").append(System.lineSeparator());
+		gearString.append("'feet' : '{count:1,id:\"minecraft:leather_boots\"}',").append(System.lineSeparator());
 		gearString.append("'offhand' : '',").append(System.lineSeparator());
 
 		List<ItemStack> emptyInventoryList = NonNullList.withSize(36, ItemStack.EMPTY);
@@ -102,13 +102,13 @@ public class StarterDefaultKitFunctions {
 			String itemString = "";
 
 			if (i == 0) {
-				itemString = "{Count:1b,id:\"minecraft:bow\",tag:{Damage:0,Enchantments:[{id:\"minecraft:power\",lvl:1s}],RepairCost:1}}";
+				itemString = "{count:1,id:\"minecraft:bow\",components:{\"minecraft:enchantments\":{levels:{\"minecraft:power\":1}}}}";
 			}
 			else if (i == 7) {
-				itemString = "{Count:6b,id:\"minecraft:baked_potato\"}";
+				itemString = "{count:6,id:\"minecraft:baked_potato\"}";
 			}
 			else if (i == 8) {
-				itemString = "{Count:32b,id:\"minecraft:arrow\"}";
+				itemString = "{count:32,id:\"minecraft:arrow\"}";
 			}
 
 			gearString.append(i).append(" : '").append(itemString).append("',").append(System.lineSeparator());
@@ -125,18 +125,18 @@ public class StarterDefaultKitFunctions {
 		gearString.append("'head' : '',").append(System.lineSeparator());
 		gearString.append("'chest' : '',").append(System.lineSeparator());
 		gearString.append("'legs' : '',").append(System.lineSeparator());
-		gearString.append("'feet' : '{Count:1b,id:\"minecraft:iron_boots\",tag:{Damage:0}}',").append(System.lineSeparator());
-		gearString.append("'offhand' : '{Count:4b,id:\"minecraft:oak_sapling\"}',").append(System.lineSeparator());
+		gearString.append("'feet' : '{count:1,id:\"minecraft:iron_boots\"}',").append(System.lineSeparator());
+		gearString.append("'offhand' : '{count:4,id:\"minecraft:oak_sapling\"}',").append(System.lineSeparator());
 
 		List<ItemStack> emptyInventoryList = NonNullList.withSize(36, ItemStack.EMPTY);
 		for (int i = 0; i < emptyInventoryList.size(); i++) {
 			String itemString = "";
 
 			if (i == 0) {
-				itemString = "{Count:1b,id:\"minecraft:iron_axe\",tag:{Damage:0,Enchantments:[{id:\"minecraft:efficiency\",lvl:1s}],RepairCost:1}}";
+				itemString = "{count:1,id:\"minecraft:iron_axe\",components:{\"minecraft:enchantments\":{levels:{\"minecraft:efficiency\":1}}}}";
 			}
 			else if (i == 8) {
-				itemString = "{Count:8b,id:\"minecraft:cooked_beef\"}";
+				itemString = "{count:8,id:\"minecraft:cooked_beef\"}";
 			}
 
 			gearString.append(i).append(" : '").append(itemString).append("',").append(System.lineSeparator());
@@ -153,7 +153,7 @@ public class StarterDefaultKitFunctions {
 		gearString.append("'head' : '',").append(System.lineSeparator());
 		gearString.append("'chest' : '',").append(System.lineSeparator());
 		gearString.append("'legs' : '',").append(System.lineSeparator());
-		gearString.append("'feet' : '{Count:1b,id:\"minecraft:golden_boots\",tag:{Damage:0}}',").append(System.lineSeparator());
+		gearString.append("'feet' : '{count:1,id:\"minecraft:golden_boots\"}',").append(System.lineSeparator());
 		gearString.append("'offhand' : '',").append(System.lineSeparator());
 
 		List<ItemStack> emptyInventoryList = NonNullList.withSize(36, ItemStack.EMPTY);
@@ -161,25 +161,25 @@ public class StarterDefaultKitFunctions {
 			String itemString = "";
 
 			if (i == 0) {
-				itemString = "{Count:1b,id:\"minecraft:stick\"}";
+				itemString = "{count:1,id:\"minecraft:stick\"}";
 			}
 			else if (i == 1) {
-				itemString = "{Count:16b,id:\"minecraft:apple\"}";
+				itemString = "{count:16,id:\"minecraft:apple\"}";
 			}
 			else if (i == 3) {
-				itemString = "{Count:1b,id:\"minecraft:splash_potion\",tag:{Potion:\"minecraft:strong_swiftness\"}}";
+				itemString = "{count:1,id:\"minecraft:splash_potion\",components:{\"minecraft:potion_contents\":{potion:\"minecraft:strong_swiftness\"}}}";
 			}
 			else if (i == 4) {
-				itemString = "{Count:1b,id:\"minecraft:splash_potion\",tag:{Potion:\"minecraft:strong_healing\"}}";
+				itemString = "{count:1,id:\"minecraft:splash_potion\",components:{\"minecraft:potion_contents\":{potion:\"minecraft:strong_healing\"}}}";
 			}
 			else if (i == 6) {
-				itemString = "{Count:1b,id:\"minecraft:splash_potion\",tag:{Potion:\"minecraft:strong_poison\"}}";
+				itemString = "{count:1,id:\"minecraft:splash_potion\",components:{\"minecraft:potion_contents\":{potion:\"minecraft:strong_poison\"}}}";
 			}
 			else if (i == 7) {
-				itemString = "{Count:1b,id:\"minecraft:splash_potion\",tag:{Potion:\"minecraft:strong_harming\"}}";
+				itemString = "{count:1,id:\"minecraft:splash_potion\",components:{\"minecraft:potion_contents\":{potion:\"minecraft:strong_harming\"}}}";
 			}
 			else if (i == 8) {
-				itemString = "{Count:1b,id:\"minecraft:splash_potion\",tag:{Potion:\"minecraft:strong_harming\"}}";
+				itemString = "{count:1,id:\"minecraft:splash_potion\",components:{\"minecraft:potion_contents\":{potion:\"minecraft:strong_harming\"}}}";
 			}
 
 			gearString.append(i).append(" : '").append(itemString).append("',").append(System.lineSeparator());

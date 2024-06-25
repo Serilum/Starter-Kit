@@ -75,6 +75,7 @@ public abstract class StarterKitAbstractContainerScreen<T extends AbstractContai
 
     public StarterKitAbstractContainerScreen(T menu, Inventory playerInventory, Component title) {
         super(title);
+
         if (playerInventory == null) {
             Constants.logger.warn(Constants.logPrefix + "Cannot initiate StarterKitAbstractContainerScreen, the playerInventory is null.");
             return;

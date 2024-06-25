@@ -6,7 +6,7 @@ logoFile="icon.png"
 
 [[mods]]
 modId="starterkit"
-version="6.8"
+version="6.9"
 displayName="Starter Kit"
 displayURL="https://serilum.com/mod/starter-kit"
 authors="Rick South"

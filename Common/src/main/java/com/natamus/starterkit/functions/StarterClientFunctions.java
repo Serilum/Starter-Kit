@@ -31,6 +31,11 @@ public class StarterClientFunctions {
 		removeLocalPlayerEquipment();
 		setCachedStarterKitInventory(player, 0);
 
+		if (VariablesClient.cachedStarterKitInventory == null) {
+			Constants.logger.warn(Constants.logPrefix + "Cannot initiate StarterKitInventoryScreen, the cached starter kit inventory is null.");
+            return;
+		}
+
 		ConstantsClient.mc.setScreen(new StarterKitInventoryScreen(player));
 	}
 
@@ -67,6 +72,11 @@ public class StarterClientFunctions {
 
 		removeLocalPlayerEquipment();
 		setCachedStarterKitInventory(player, kitIndex);
+
+		if (VariablesClient.cachedStarterKitInventory == null) {
+			Constants.logger.warn(Constants.logPrefix + "Cannot cycle StarterKitInventoryScreen, the cached starter kit inventory is null.");
+            return;
+		}
 
 		ConstantsClient.mc.setScreen(new StarterKitInventoryScreen(player));
 	}

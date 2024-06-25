@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
+import com.natamus.starterkit.data.Constants;
 import com.natamus.starterkit.util.Reference;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -39,8 +40,8 @@ public abstract class StarterKitAbstractContainerScreen<T extends AbstractContai
     protected int titleLabelY;
     protected int inventoryLabelX;
     protected int inventoryLabelY;
-    protected final T menu;
-    protected final Component playerInventoryTitle;
+    protected T menu;
+    protected Component playerInventoryTitle;
     @Nullable
     protected Slot hoveredSlot;
     @Nullable
@@ -60,7 +61,7 @@ public abstract class StarterKitAbstractContainerScreen<T extends AbstractContai
     private long snapbackTime;
     private ItemStack snapbackItem;
     private long quickdropTime;
-    protected final Set<Slot> quickCraftSlots;
+    protected Set<Slot> quickCraftSlots;
     protected boolean isQuickCrafting;
     private int quickCraftingType;
     private int quickCraftingButton;
@@ -73,6 +74,12 @@ public abstract class StarterKitAbstractContainerScreen<T extends AbstractContai
 
     public StarterKitAbstractContainerScreen(T abstractContainerMenu, Inventory inventory, Component component) {
         super(component);
+
+        if (inventory == null) {
+            Constants.logger.warn(Constants.logPrefix + "Cannot initiate StarterKitAbstractContainerScreen, the playerInventory is null.");
+            return;
+        }
+
         this.draggingItem = ItemStack.EMPTY;
         this.snapbackItem = ItemStack.EMPTY;
         this.quickCraftSlots = Sets.newHashSet();

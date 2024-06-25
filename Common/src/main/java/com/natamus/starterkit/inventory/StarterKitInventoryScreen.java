@@ -130,11 +130,11 @@ public class StarterKitInventoryScreen extends StarterKitEffectRenderingInventor
         guiGraphics.drawString(this.font, kitName, 79, 7, 4210752, false);
 
         // Kit Description
-        if (VariablesClient.cachedStarterKitDescriptions.containsKey(VariablesClient.cachedStarterKitName)) {
+        if (VariablesClient.cachedStarterKitDescriptions.containsKey(VariablesClient.cachedStarterKitName.toLowerCase())) {
             PoseStack poseStack = guiGraphics.pose();
             poseStack.pushPose();
 
-            String kitDescription = VariablesClient.cachedStarterKitDescriptions.get(VariablesClient.cachedStarterKitName);
+            String kitDescription = VariablesClient.cachedStarterKitDescriptions.get(VariablesClient.cachedStarterKitName.toLowerCase());
             Component descriptionComponent = Component.literal(kitDescription);
 
             poseStack.scale(0.66F, 0.66F, 0.66F);

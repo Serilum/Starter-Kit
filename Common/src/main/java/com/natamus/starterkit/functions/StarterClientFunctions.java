@@ -3,7 +3,6 @@ package com.natamus.starterkit.functions;
 import com.natamus.collective.functions.GearFunctions;
 import com.natamus.starterkit.data.Constants;
 import com.natamus.starterkit.data.ConstantsClient;
-import com.natamus.starterkit.data.Variables;
 import com.natamus.starterkit.data.VariablesClient;
 import com.natamus.starterkit.inventory.StarterKitInventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
@@ -94,7 +93,7 @@ public class StarterClientFunctions {
 		}
 		
 		String kitName = StarterGearFunctions.getActiveKitNames(VariablesClient.cachedStarterGearEntries).get(kitIndex);
-		String gearString = Variables.starterGearEntries.get(kitName);
+		String gearString = VariablesClient.cachedStarterGearEntries.get(kitName);
 
 		if (gearString == null) {
 			Constants.logger.warn(Constants.logPrefix + "Unable to show the choose kit screen, gearString is null from kit name '" + kitName + "' and kit index " + kitIndex + ".");

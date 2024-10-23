@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "id": "starterkit",
+  "version": "7.1",
+
+  "name": "Starter Kit",
+  "description": "Gives players who join the world for the first time configurable starter gear.",
+  "authors": [ "Rick South" ],
+  "contact": {
+    "homepage": "https://serilum.com/mod/starter-kit",
+    "sources": "https://github.com/Serilum/Starter-Kit",
+    "issues": "https://github.com/Serilum/.issue-tracker/labels/Mod:%20Starter%20Kit"
+  },
+
+  "license": "All Right Reserved",
+  "icon": "icon.png",
+
+  "environment": "*",
+  "entrypoints": { "main": [ "com.natamus.starterkit.ModFabric" ], "client": [ "com.natamus.starterkit.ModFabricClient" ], "modmenu": [ "com.natamus.starterkit.fabric.config.IntegrateModMenu" ] },
+  "mixins": [
+    "starterkit.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "fabric": "*",
+    "minecraft": ">=1.21",
+    "java": ">=21",
+    "collective": ">=7.86"
+  },
+
+  "custom": {
+    "modmenu": {
+      "links": {
+        "Donate <3" : "https://ricksouth.com/donate"
+      }
+    }
+  },
+
+  "contributors": [
+	  " ",
+	  "Thank you very much to my Membership sponsors for supporting the development of this mod!",
+	  " ",
+	  "If you would like to contribute too, check out https://serilum.com/donate.",
+	  " ",
+	  "Membership sponsors:",
+	  " Alister",
+	  " Andrean Olgo",
+	  " aternosorg",
+	  " Cherriesaurus",
+	  " kate1073",
+	  " Michael W. S.",
+	  " Tyler Behl",
+	  " XAgent"
+  ]
+}

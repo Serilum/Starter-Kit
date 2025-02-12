@@ -36,10 +36,10 @@ public class ModForge {
 
 	private void loadComplete(final FMLLoadCompleteEvent event) {
 		if (FMLEnvironment.dist.equals(Dist.CLIENT)) {
-			MinecraftForge.EVENT_BUS.register(new ForgeStarterClientEvents());
+			MinecraftForge.EVENT_BUS.register(ForgeStarterClientEvents.class);
 		}
 
-    	MinecraftForge.EVENT_BUS.register(new ForgeStarterServerEvents());
+    	MinecraftForge.EVENT_BUS.register(ForgeStarterServerEvents.class);
 	}
 
 	private static void setGlobalConstants() {

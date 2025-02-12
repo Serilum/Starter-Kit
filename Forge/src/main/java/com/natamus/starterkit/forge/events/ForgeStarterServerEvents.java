@@ -8,27 +8,25 @@ import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
-@EventBusSubscriber
 public class ForgeStarterServerEvents {
 	@SubscribeEvent
-	public void onServerStarted(ServerStartingEvent e) {
+	public static void onServerStarted(ServerStartingEvent e) {
 		StarterServerEvents.onServerStarting(e.getServer());
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
-	public void onSpawn(EntityJoinLevelEvent e) {
+	public static void onSpawn(EntityJoinLevelEvent e) {
 		StarterServerEvents.onSpawn(e.getLevel(), e.getEntity());
 	}
 	
 	@SubscribeEvent
-	public void onCommand(CommandEvent e) {
+	public static void onCommand(CommandEvent e) {
 		StarterServerEvents.onCommand("", e.getParseResults());
 	}
 
     @SubscribeEvent
-    public void registerCommands(RegisterCommandsEvent e) {
+    public static void registerCommands(RegisterCommandsEvent e) {
     	CommandStarterkit.register(e.getDispatcher());
     }
 }

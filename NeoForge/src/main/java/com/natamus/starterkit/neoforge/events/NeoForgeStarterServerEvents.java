@@ -4,13 +4,11 @@ import com.natamus.starterkit.cmds.CommandStarterkit;
 import com.natamus.starterkit.events.StarterServerEvents;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.CommandEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
-@EventBusSubscriber
 public class NeoForgeStarterServerEvents {
 	@SubscribeEvent
 	public static void onServerStarted(ServerStartingEvent e) {

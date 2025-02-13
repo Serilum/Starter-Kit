@@ -13,12 +13,12 @@ import java.util.HashMap;
 public class ToClientReceiveKitDataPacket {
     public static final ResourceLocation CHANNEL = ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "to_client_receive_kit_data_packet");
 
-    private static HashMap<String, String> packetStarterGearEntries;
-    private static HashMap<String, String> packetStarterKitDescriptions;
+    private final HashMap<String, String> packetStarterGearEntries;
+    private final HashMap<String, String> packetStarterKitDescriptions;
 
     public ToClientReceiveKitDataPacket(HashMap<String, String> entriesIn, HashMap<String, String> descriptionsIn) {
-        packetStarterGearEntries = entriesIn;
-        packetStarterKitDescriptions = descriptionsIn;
+        this.packetStarterGearEntries = entriesIn;
+        this.packetStarterKitDescriptions = descriptionsIn;
     }
 
     public static ToClientReceiveKitDataPacket decode(FriendlyByteBuf buf) {
@@ -36,8 +36,10 @@ public class ToClientReceiveKitDataPacket {
 
     public static void handle(PacketContext<ToClientReceiveKitDataPacket> ctx) {
         if (ctx.side().equals(Side.CLIENT)) {
-            VariablesClient.cachedStarterGearEntries = packetStarterGearEntries;
-            VariablesClient.cachedStarterKitDescriptions = packetStarterKitDescriptions;
+            ToClientReceiveKitDataPacket packet = ctx.message();
+
+            VariablesClient.cachedStarterGearEntries = packet.packetStarterGearEntries;
+            VariablesClient.cachedStarterKitDescriptions = packet.packetStarterKitDescriptions;
 
             VariablesClient.openChooseKitScreen = true;
         }

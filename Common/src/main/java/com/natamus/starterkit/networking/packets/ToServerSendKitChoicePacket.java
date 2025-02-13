@@ -18,10 +18,10 @@ import net.minecraft.world.level.Level;
 public class ToServerSendKitChoicePacket {
     public static final ResourceLocation CHANNEL = new ResourceLocation(Reference.MOD_ID, "to_server_send_kit_choice_packet");
 
-    private static String kitName;
+    private final String kitName;
 
     public ToServerSendKitChoicePacket(String kitNameIn) {
-        kitName = kitNameIn;
+        this.kitName = kitNameIn;
     }
 
     public static ToServerSendKitChoicePacket decode(FriendlyByteBuf buf) {
@@ -36,20 +36,21 @@ public class ToServerSendKitChoicePacket {
 
     public static void handle(PacketContext<ToServerSendKitChoicePacket> ctx) {
         if (ctx.side().equals(Side.SERVER)) {
+            ToServerSendKitChoicePacket packet = ctx.message();
             Player player = ctx.sender();
 
             if (StarterCheckFunctions.shouldPlayerReceiveStarterKit(player)) {
                 Level level = player.level();
                 if (level.getServer().isDedicatedServer()) {
                     if (ConfigHandler.announcePlayerKitChoiceInDedicatedServer) {
-                        MessageFunctions.broadcastMessage(level, Component.literal(player.getName().getString() + " has chosen the '" + Util.formatKitName(kitName) + "' kit!").withStyle(ChatFormatting.DARK_GREEN));
+                        MessageFunctions.broadcastMessage(level, Component.literal(player.getName().getString() + " has chosen the '" + Util.formatKitName(packet.kitName) + "' kit!").withStyle(ChatFormatting.DARK_GREEN));
                     }
                 }
                 else {
-                    MessageFunctions.sendMessage(player, "You have been given the '" + Util.formatKitName(kitName) + "' starter kit.", ChatFormatting.DARK_GREEN, true);
+                    MessageFunctions.sendMessage(player, "You have been given the '" + Util.formatKitName(packet.kitName) + "' starter kit.", ChatFormatting.DARK_GREEN, true);
                 }
 
-                StarterGearFunctions.giveStarterKit(player, null, kitName);
+                StarterGearFunctions.giveStarterKit(player, null, packet.kitName);
             }
         }
     }

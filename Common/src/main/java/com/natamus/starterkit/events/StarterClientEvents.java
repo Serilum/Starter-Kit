@@ -21,9 +21,11 @@ public class StarterClientEvents {
 
 		// Workaround because NeoForge needs to have setScreen() on a main thread.
 		if (VariablesClient.openChooseKitScreen) {
-			VariablesClient.openChooseKitScreen = false;
+			if (ConstantsClient.mc.screen == null) {
+				VariablesClient.openChooseKitScreen = false;
 
-            StarterClientFunctions.showInitialChooseKitScreen();
+				StarterClientFunctions.showInitialChooseKitScreen();
+			}
 		}
 
 		if (VariablesClient.priorPlayerEquipment == null) {

@@ -66,10 +66,10 @@ public class StarterKitInventoryScreen extends StarterKitAbstractContainerScreen
         List<ItemStack> offhandList = Arrays.asList(entityEquipment.get(EquipmentSlot.OFFHAND));
 
         player.getInventory().setSelectedSlot(0);
-        player.setItemSlot(EquipmentSlot.HEAD, armourList.get(3));
-        player.setItemSlot(EquipmentSlot.CHEST, armourList.get(2));
-        player.setItemSlot(EquipmentSlot.LEGS, armourList.get(1));
-        player.setItemSlot(EquipmentSlot.FEET, armourList.get(0));
+        player.setItemSlot(EquipmentSlot.HEAD, armourList.get(0));
+        player.setItemSlot(EquipmentSlot.CHEST, armourList.get(1));
+        player.setItemSlot(EquipmentSlot.LEGS, armourList.get(2));
+        player.setItemSlot(EquipmentSlot.FEET, armourList.get(3));
         player.setItemSlot(EquipmentSlot.MAINHAND, itemList.get(0));
         player.setItemSlot(EquipmentSlot.OFFHAND, offhandList.get(0));
 
@@ -124,7 +124,7 @@ public class StarterKitInventoryScreen extends StarterKitAbstractContainerScreen
 
         Component headerComponent = Component.literal(headerString).withStyle(ChatFormatting.GOLD).withStyle(ChatFormatting.BOLD);
         int headerWidth = this.font.width(headerComponent);
-        guiGraphics.drawString(this.font, headerComponent, -((headerWidth - this.imageWidth)/2), -16, 0, true);
+        guiGraphics.drawString(this.font, headerComponent, -((headerWidth - this.imageWidth)/2), -16, 0xFFFFFFFF, true);
 
         // Kit Name
         String fullKitName = Util.formatKitName(VariablesClient.cachedStarterKitName);
@@ -137,7 +137,7 @@ public class StarterKitInventoryScreen extends StarterKitAbstractContainerScreen
             kitName += "...";
         }
 
-        guiGraphics.drawString(this.font, kitName, 79, 7, 4210752, false);
+        guiGraphics.drawString(this.font, kitName, 79, 7, 0xFF323200, false);
 
         // Kit Description
         if (VariablesClient.cachedStarterKitDescriptions.containsKey(VariablesClient.cachedStarterKitName.toLowerCase())) {
@@ -147,7 +147,7 @@ public class StarterKitInventoryScreen extends StarterKitAbstractContainerScreen
             String kitDescription = VariablesClient.cachedStarterKitDescriptions.get(VariablesClient.cachedStarterKitName.toLowerCase());
             Component descriptionComponent = Component.literal(kitDescription);
 
-            //matrixStack.scale(0.66F, 0.66F);
+            matrixStack.scale(0.66F, 0.66F);
 
             int y = 28;
             List<FormattedCharSequence> descriptionLines = ComponentRenderUtils.wrapComponents(descriptionComponent, 136, this.minecraft.font);
@@ -158,10 +158,10 @@ public class StarterKitInventoryScreen extends StarterKitAbstractContainerScreen
                 }
 
                 if (y > 70 && descriptionLines.size() > 6) {
-                    guiGraphics.drawString(this.font, "...", x + 132, y, 4210752, false);
+                    guiGraphics.drawString(this.font, "...", x + 132, y, 0xFF323200, false);
                 }
 
-                guiGraphics.drawString(this.font, line, x, y, 4210752, false);
+                guiGraphics.drawString(this.font, line, x, y, 0xFF323200, false);
                 y += 10;
 
                 if (y > 80) {

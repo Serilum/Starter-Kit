@@ -17,13 +17,14 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.StringUtils;
-
 import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -124,9 +125,15 @@ public class StarterGearFunctions {
 		List<ItemStack> toAddAfter = new ArrayList<>();
 		if (ConfigHandler.addExistingItemsAfterKitSet) {
 			Inventory inv = player.getInventory();
-			boolean isempty = true;
 			for (int i=0; i < 36; i++) {
 				ItemStack itemStack = inv.getItem(i);
+				if (!itemStack.isEmpty()) {
+					toAddAfter.add(itemStack.copy());
+				}
+			}
+
+			for (EquipmentSlot slot : Constants.equipmentSlots) {
+				ItemStack itemStack = player.getItemBySlot(slot);
 				if (!itemStack.isEmpty()) {
 					toAddAfter.add(itemStack.copy());
 				}

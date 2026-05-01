@@ -235,6 +235,13 @@ public class StarterKitInventoryScreen extends StarterKitEffectRenderingInventor
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        for (var child : this.children()) {
+            if (child instanceof Button btn && btn.mouseClicked(mouseX, mouseY, button)) {
+                this.setFocused(btn);
+                this.buttonClicked = true;
+                return true;
+            }
+        }
         return (!this.widthTooNarrow) && super.mouseClicked(mouseX, mouseY, button);
     }
 

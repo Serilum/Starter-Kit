@@ -11,12 +11,12 @@ public class StarterCheckFunctions {
 		return shouldPlayerReceiveStarterKit(player.level(), player);
 	}
 	public static boolean shouldPlayerReceiveStarterKit(Level level, Player player) {
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return false;
 		}
 
 		MinecraftServer minecraftServer = level.getServer();
-		if (!minecraftServer.isDedicatedServer()) {
+		if (!minecraftServer.isDedicatedServer() && !minecraftServer.isPublished()) {
 			String levelName = WorldFunctions.getWorldFolderName(minecraftServer);
 			if (Variables.trackingMap.get("singleplayer").containsKey(levelName)) {
 				return !Variables.trackingMap.get("singleplayer").get(levelName);
@@ -36,19 +36,18 @@ public class StarterCheckFunctions {
 		addPlayerToTrackingMap(player.level(), player);
 	}
 	public static void addPlayerToTrackingMap(Level level, Player player) {
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return;
 		}
 
 		MinecraftServer minecraftServer = level.getServer();
-		if (!minecraftServer.isDedicatedServer()) {
-			String levelName = WorldFunctions.getWorldFolderName(minecraftServer);
-
-			Variables.trackingMap.get("singleplayer").put(levelName, true);
-		}
-
 		String rawUUID = player.getStringUUID();
 		Variables.trackingMap.get("multiplayer").put(rawUUID, true);
+
+		if (!minecraftServer.isDedicatedServer()) {
+			String levelName = WorldFunctions.getWorldFolderName(minecraftServer);
+			Variables.trackingMap.get("singleplayer").put(levelName, true);
+		}
 
 		StarterDataFunctions.writeTrackingMapToJsonFile(minecraftServer);
 	}

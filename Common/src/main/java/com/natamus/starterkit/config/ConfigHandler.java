@@ -35,7 +35,7 @@ public class ConfigHandler extends DuskConfig {
 			"If kit names should be formatted. Each word will be capitalized."
 		));
 
-		configMetaData.put("chooseKitScreenHeader", Arrays.asList(
+		configMetaData.put("chooseKitText", Arrays.asList(
 			"The text used above the kit choice screen, or if the mod is not installed in the chat. %s will be replaced with the player's name."
 		));
 

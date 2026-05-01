@@ -23,4 +23,6 @@ public class VariablesClient {
 
 	public static boolean waitingForAnnouncement = false;
 	public static boolean openChooseKitScreen = false;
+	public static boolean anotherScreenWasOpen = false;
+	public static int openChooseKitScreenTicks = 0;
 }

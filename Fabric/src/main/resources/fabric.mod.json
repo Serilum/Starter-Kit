@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "starterkit",
-  "version": "7.4",
+  "version": "8.0",
 
   "name": "Starter Kit",
   "description": "Gives players who join the world for the first time configurable starter gear.",
@@ -26,7 +26,7 @@
     "fabric": "*",
     "minecraft": ">=1.20",
     "java": ">=17",
-    "collective": ">=8.3"
+    "collective": ">=8.21"
   },
 
   "custom": {
@@ -44,12 +44,11 @@
 	  "If you would like to contribute too, check out https://serilum.com/donate.",
 	  " ",
 	  "Membership sponsors:",
-	  " Alister",
+	  " akanealw",
 	  " Andrean Olgo",
 	  " aternosorg",
 	  " Cherriesaurus",
-	  " Michael W. S.",
-	  " t128",
+	  " MWS",
 	  " Tyler Behl",
 	  " XAgent"
   ]

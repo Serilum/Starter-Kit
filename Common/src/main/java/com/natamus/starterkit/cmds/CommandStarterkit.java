@@ -58,30 +58,30 @@ public class CommandStarterkit {
 				.executes((command) -> {
 					CommandSourceStack source = command.getSource();
 					if (!source.isPlayer()) {
-						MessageFunctions.sendMessage(source, "This command can only be ran as a player.", ChatFormatting.RED);
+						MessageFunctions.sendTranslatableMessage(source, "collective.shared.message.playeronly", ChatFormatting.RED);
 						return 0;
 					}
 
 					Player player = source.getPlayer();
 
 					if (!StarterCheckFunctions.shouldPlayerReceiveStarterKit(player)) {
-						MessageFunctions.sendMessage(source, "You are not eligible for a starter kit.", ChatFormatting.RED);
+						MessageFunctions.sendTranslatableMessage(source, "collective.starterkit.message.eligiblestarterkit", ChatFormatting.RED);
 						return 0;
 					}
 
 					String kitName = Util.findCorrectKitNameFromInput(StringArgumentType.getString(command, "kit_name"));
 					if (!Variables.starterGearEntries.containsKey(kitName)) {
-						MessageFunctions.sendMessage(source, "The starter kit '" + kitName + "' does not exist.", ChatFormatting.RED);
+						MessageFunctions.sendTranslatableMessage(source, "collective.starterkit.message.starterkitexist", ChatFormatting.RED, kitName);
 						return 0;
 					}
 
 					String actualKitName = StarterGearFunctions.giveStarterKit(player, null, kitName);
 					if (actualKitName == null) {
-						MessageFunctions.sendMessage(source, "Something went wrong while choosing your starter kit.", ChatFormatting.RED);
+						MessageFunctions.sendTranslatableMessage(source, "collective.starterkit.message.somethingwentwrongwhilechoosing", ChatFormatting.RED);
 						return 0;
 					}
 
-					MessageFunctions.sendMessage(player, "You have been given the '" + Util.formatKitName(actualKitName) + "' starter kit.", ChatFormatting.DARK_GREEN, true);
+					MessageFunctions.sendTranslatableMessage(player, "collective.starterkit.message.receivedstarterkit", true, ChatFormatting.DARK_GREEN, Util.formatKitName(actualKitName));
 					return 1;
 				})))
 
@@ -114,18 +114,18 @@ public class CommandStarterkit {
 					String kitNameInput = StringArgumentType.getString(command, "kit_name");
 					if (kitNameInput.equalsIgnoreCase("_all")) {
 						StarterGearFunctions.moveAllKitsToInactive();
-						MessageFunctions.sendMessage(source, "Moved all kits to the inactive folder.", ChatFormatting.DARK_GREEN, true);
+						MessageFunctions.sendTranslatableMessage(source, "collective.starterkit.message.movedkitsinactive", true, ChatFormatting.DARK_GREEN);
 						return 1;
 					}
 
 					String kitName = Util.findCorrectKitNameFromInput(kitNameInput);
 
 					if (!StarterGearFunctions.moveKitToInactive(kitName)) {
-						MessageFunctions.sendMessage(source, "Unable to move the '" + kitName + "' kit to the inactive folder.", ChatFormatting.RED, true);
+						MessageFunctions.sendTranslatableMessage(source, "collective.starterkit.message.unablemovekitinactive", true, ChatFormatting.RED, kitName);
 						return 0;
 					}
 
-					MessageFunctions.sendMessage(source, "The kit '" + kitName + "' has been moved to the inactive folder.", ChatFormatting.DARK_GREEN, true);
+					MessageFunctions.sendTranslatableMessage(source, "collective.starterkit.message.kitmovedinactive", true, ChatFormatting.DARK_GREEN, kitName);
 					return 1;
 				})))
 
@@ -138,18 +138,18 @@ public class CommandStarterkit {
 					String kitNameInput = StringArgumentType.getString(command, "kit_name");
 					if (kitNameInput.equalsIgnoreCase("_all")) {
 						StarterGearFunctions.moveAllKitsToActive();
-						MessageFunctions.sendMessage(source, "Moved all kits to the active folder.", ChatFormatting.DARK_GREEN, true);
+						MessageFunctions.sendTranslatableMessage(source, "collective.starterkit.message.movedkitsactive", true, ChatFormatting.DARK_GREEN);
 						return 1;
 					}
 
 					String kitName = Util.findCorrectKitNameFromInput(kitNameInput);
 
 					if (!StarterGearFunctions.moveKitToActive(kitName)) {
-						MessageFunctions.sendMessage(source, "Unable to move the '" + kitName + "' kit to the active folder.", ChatFormatting.RED, true);
+						MessageFunctions.sendTranslatableMessage(source, "collective.starterkit.message.unablemovekitactive", true, ChatFormatting.RED, kitName);
 						return 0;
 					}
 
-					MessageFunctions.sendMessage(source, "The kit '" + kitName + "' has been moved to the active folder.", ChatFormatting.DARK_GREEN, true);
+					MessageFunctions.sendTranslatableMessage(source, "collective.starterkit.message.kitmovedactive", true, ChatFormatting.DARK_GREEN, kitName);
 					return 1;
 				})))
 
@@ -170,7 +170,7 @@ public class CommandStarterkit {
 					StarterGearFunctions.initStarterKitHandle(level, targetPlayer, source);
 
 					if (ConfigHandler.randomizeMultipleKitsToggle && Variables.starterGearEntries.size() > 1) {
-						MessageFunctions.sendMessage(source, targetPlayer.getName().getString() + " has been given the choice for a new starter kit!", ChatFormatting.DARK_GREEN, true);
+						MessageFunctions.sendTranslatableMessage(source, "collective.starterkit.message.givenchoicestarter", true, ChatFormatting.DARK_GREEN, targetPlayer.getName().getString());
 					}
 					return 1;
 				})))
@@ -193,7 +193,7 @@ public class CommandStarterkit {
 					StarterGearFunctions.initStarterKitHandle(level, targetPlayer, source, kitName);
 
 					if (ConfigHandler.randomizeMultipleKitsToggle && Variables.starterGearEntries.size() > 1) {
-						MessageFunctions.sendMessage(source, targetPlayer.getName().getString() + " has been given the choice for a new starter kit!", ChatFormatting.DARK_GREEN, true);
+						MessageFunctions.sendTranslatableMessage(source, "collective.starterkit.message.givenchoicestarter", true, ChatFormatting.DARK_GREEN, targetPlayer.getName().getString());
 					}
 					return 1;
 				}))))
@@ -203,7 +203,7 @@ public class CommandStarterkit {
 					CommandSourceStack source = command.getSource();
 					if (!permissionCheck(source)) { return 0; }
 
-					MessageFunctions.sendMessage(source, Component.literal("The current ").withStyle(ChatFormatting.DARK_GREEN).append(Component.literal("active").withStyle(ChatFormatting.GOLD).append(Component.literal(" starter kits are:").withStyle(ChatFormatting.DARK_GREEN))), true);
+					MessageFunctions.sendMessage(source, Component.translatable("collective.starterkit.message.currentactivestarter").withStyle(ChatFormatting.DARK_GREEN), true);
 
 					List<String> activeKitNames = StarterGearFunctions.getActiveKitNames();
 					int activeKitcount = activeKitNames.size();
@@ -217,16 +217,16 @@ public class CommandStarterkit {
 					}
 
 					if (ConfigHandler.randomizeMultipleKitsToggle) {
-						MessageFunctions.sendMessage(source, "One kit is given randomly on join.", ChatFormatting.DARK_GREEN, true);
+						MessageFunctions.sendTranslatableMessage(source, "collective.starterkit.message.kitgivenrandomly", true, ChatFormatting.DARK_GREEN);
 					}
 					else {
-						MessageFunctions.sendMessage(source, "Players can choose one of the kits on join.", ChatFormatting.DARK_GREEN, true);
+						MessageFunctions.sendTranslatableMessage(source, "collective.starterkit.message.playerschoosekits", true, ChatFormatting.DARK_GREEN);
 						if (activeKitcount < 2) {
 							if (activeKitcount == 0) {
-								MessageFunctions.sendMessage(source, " > If 2 more kits are added.", ChatFormatting.DARK_GRAY);
+								MessageFunctions.sendTranslatableMessage(source, " ", "collective.starterkit.message.if2more", ChatFormatting.DARK_GRAY);
 							}
 							else {
-								MessageFunctions.sendMessage(source, " > If 1 more kit is added. For now all players will receive the '" + activeKitNames.getFirst() + "' kit without a choice screen.", ChatFormatting.DARK_GRAY);
+								MessageFunctions.sendTranslatableMessage(source, " ", "collective.starterkit.message.if1more", ChatFormatting.DARK_GRAY, activeKitNames.getFirst());
 							}
 						}
 					}
@@ -240,7 +240,7 @@ public class CommandStarterkit {
 					CommandSourceStack source = command.getSource();
 					if (!permissionCheck(source)) { return 0; }
 
-					MessageFunctions.sendMessage(source, Component.literal("The current ").withStyle(ChatFormatting.DARK_GREEN).append(Component.literal("inactive").withStyle(ChatFormatting.RED).append(Component.literal(" starter kits are:").withStyle(ChatFormatting.DARK_GREEN))), true);
+					MessageFunctions.sendMessage(source, Component.translatable("collective.starterkit.message.currentinactivestarter").withStyle(ChatFormatting.DARK_GREEN), true);
 
 					List<String> inactiveKitNames = StarterGearFunctions.getInactiveKitNames();
 					if (inactiveKitNames.size() > 0) {
@@ -262,7 +262,7 @@ public class CommandStarterkit {
 
 					StarterGearFunctions.processKitFiles();
 
-					MessageFunctions.sendMessage(command.getSource(), "All active kits have been reloaded.", ChatFormatting.DARK_GREEN, true);
+					MessageFunctions.sendTranslatableMessage(command.getSource(), "collective.starterkit.message.activekitsreloaded", true, ChatFormatting.DARK_GREEN);
 					sendKitCount(source, false);
 					return 1;
 				}))
@@ -279,7 +279,7 @@ public class CommandStarterkit {
 
 					StarterDataFunctions.resetTrackingMap(level.getServer());
 
-					MessageFunctions.sendMessage(source, "Starter Kit tracking data has been reset. All players will now again receive a kit on join.", ChatFormatting.DARK_GREEN, true);
+					MessageFunctions.sendTranslatableMessage(source, "collective.starterkit.message.trackingdatareset", true, ChatFormatting.DARK_GREEN, Reference.NAME);
 					return 1;
 				}))
 			);
@@ -288,7 +288,7 @@ public class CommandStarterkit {
 
 	private static boolean permissionCheck(CommandSourceStack source) {
 		if (!source.hasPermission(2)) {
-			MessageFunctions.sendMessage(source, "You do not have permission to use that command.", ChatFormatting.RED);
+			MessageFunctions.sendTranslatableMessage(source, "collective.shared.message.nopermission", ChatFormatting.RED);
 			return false;
 		}
 		return true;
@@ -296,33 +296,33 @@ public class CommandStarterkit {
 
 	private static int showCommandHelp(CommandSourceStack source) {
 		if (source.hasPermission(2)) {
-			MessageFunctions.sendMessage(source, Component.literal(Reference.NAME + " Admin Usage:").withStyle(ChatFormatting.GOLD), true);
+			MessageFunctions.sendMessage(source, Component.translatable("collective.shared.message.adminusage", Reference.NAME).withStyle(ChatFormatting.GOLD), true);
 			MessageFunctions.sendMessage(source, " /sk add (kit_name)", ChatFormatting.DARK_GREEN);
-			MessageFunctions.sendMessage(source, "     Adds your current inventory to the active kits.", ChatFormatting.GRAY);
+			MessageFunctions.sendTranslatableMessage(source, "     ", "collective.starterkit.message.addscurrentinventory", ChatFormatting.GRAY);
 			MessageFunctions.sendMessage(source, " /sk set (kit_name)", ChatFormatting.DARK_GREEN);
-			MessageFunctions.sendMessage(source, "     Sets your current inventory as the only active kit.", ChatFormatting.GRAY);
+			MessageFunctions.sendTranslatableMessage(source, "     ", "collective.starterkit.message.setscurrentinventory", ChatFormatting.GRAY);
 
 			MessageFunctions.sendMessage(source, " /sk give <player> (kit_name)", ChatFormatting.DARK_GREEN);
-			MessageFunctions.sendMessage(source, "     Give a player a random (or specific) starter kit.", ChatFormatting.GRAY);
+			MessageFunctions.sendTranslatableMessage(source, "     ", "collective.starterkit.message.giveplayerrandom", ChatFormatting.GRAY);
 
 			MessageFunctions.sendMessage(source, " /sk activate <kit_name>/_all", ChatFormatting.DARK_GREEN);
-			MessageFunctions.sendMessage(source, "     Moves kit_name or all kits from inactive to active.", ChatFormatting.GRAY);
+			MessageFunctions.sendTranslatableMessage(source, "     ", "collective.starterkit.message.moveskitnamekitsfrom", ChatFormatting.GRAY);
 			MessageFunctions.sendMessage(source, " /sk deactivate <kit_name>/_all", ChatFormatting.DARK_GREEN);
-			MessageFunctions.sendMessage(source, "     Moves kit_name or all kits from active to inactive.", ChatFormatting.GRAY);
+			MessageFunctions.sendTranslatableMessage(source, "     ", "collective.starterkit.message.moveskitnamekits", ChatFormatting.GRAY);
 
 			MessageFunctions.sendMessage(source, " /sk list (inactive)", ChatFormatting.DARK_GREEN);
-			MessageFunctions.sendMessage(source, "     Lists all active (or inactive) kits.", ChatFormatting.GRAY);
+			MessageFunctions.sendTranslatableMessage(source, "     ", "collective.starterkit.message.listsactiveinactive", ChatFormatting.GRAY);
 			MessageFunctions.sendMessage(source, " /sk reset", ChatFormatting.DARK_GREEN);
-			MessageFunctions.sendMessage(source, "     Resets all tracking. Players receive another kit on join.", ChatFormatting.GRAY);
+			MessageFunctions.sendTranslatableMessage(source, "     ", "collective.starterkit.message.resetstrackingplayers", ChatFormatting.GRAY);
 			MessageFunctions.sendMessage(source, " /sk reload", ChatFormatting.DARK_GREEN);
-			MessageFunctions.sendMessage(source, "     Reloads starter kit changes from the config folder.", ChatFormatting.GRAY);
+			MessageFunctions.sendTranslatableMessage(source, "     ", "collective.starterkit.message.reloadsstarterkit", ChatFormatting.GRAY);
 		}
 
-		MessageFunctions.sendMessage(source, Component.literal(Reference.NAME + " User Usage:").withStyle(ChatFormatting.GOLD), true);
+		MessageFunctions.sendMessage(source, Component.translatable("collective.starterkit.message.userusage", Reference.NAME).withStyle(ChatFormatting.GOLD), true);
 		MessageFunctions.sendMessage(source, " /sk choose <kit_name>", ChatFormatting.DARK_GREEN);
-		MessageFunctions.sendMessage(source, "     Allows players to choose a starter kit via commands. This is only needed when Starter Kit is not installed on the client and the server enabled kit choices.", ChatFormatting.GRAY);
+		MessageFunctions.sendTranslatableMessage(source, "     ", "collective.starterkit.message.allowsplayerschoose", ChatFormatting.GRAY, Reference.NAME);
 		MessageFunctions.sendMessage(source, " /sk info <kit_name>", ChatFormatting.DARK_GREEN);
-		MessageFunctions.sendMessage(source, "     Shows the description and items of kit_name.", ChatFormatting.GRAY);
+		MessageFunctions.sendTranslatableMessage(source, "     ", "collective.starterkit.message.showsdescriptionitems", ChatFormatting.GRAY);
 		return 1;
 	}
 
@@ -330,7 +330,7 @@ public class CommandStarterkit {
 		if (!permissionCheck(source)) { return 0; }
 
 		if (!source.isPlayer()) {
-			MessageFunctions.sendMessage(source, "This command can only be ran as a player.", ChatFormatting.RED);
+			MessageFunctions.sendTranslatableMessage(source, "collective.shared.message.playeronly", ChatFormatting.RED);
 			return 0;
 		}
 
@@ -350,14 +350,14 @@ public class CommandStarterkit {
 		String actualKitName = StarterGearFunctions.createStarterKitFile(player, kitName, adding);
 
 		if (actualKitName.equals("")) {
-			MessageFunctions.sendMessage(source, "Something went wrong while " + wording + " a new starter kit.", ChatFormatting.RED);
+			MessageFunctions.sendTranslatableMessage(source, adding ? "collective.starterkit.message.somethingwentwrongadding" : "collective.starterkit.message.somethingwentwrongsetting", ChatFormatting.RED);
 			return 0;
 		}
 
-		MessageFunctions.sendMessage(source, "The starter kit '" + Util.formatKitName(actualKitName) + "' was " + worded + "!", ChatFormatting.DARK_GREEN, true);
+		MessageFunctions.sendTranslatableMessage(source, adding ? "collective.starterkit.message.starterkitadded" : "collective.starterkit.message.starterkitset", true, ChatFormatting.DARK_GREEN, Util.formatKitName(actualKitName));
 
 		if (!kitName.equals(actualKitName)) {
-			MessageFunctions.sendMessage(source, " If you'd like to specify the kit name, use:", ChatFormatting.GRAY, true);
+			MessageFunctions.sendTranslatableMessage(source, " ", "collective.starterkit.message.ifdlike", true, ChatFormatting.GRAY);
 			MessageFunctions.sendMessage(source, "     /sk " + cmd + " <kit_name>", ChatFormatting.GRAY);
 			MessageFunctions.sendMessage(source, " ", ChatFormatting.GRAY);
 		}
@@ -381,6 +381,6 @@ public class CommandStarterkit {
 			nowword = "";
 		}
 
-		MessageFunctions.sendMessage(source, " There " + isare + " " + nowword + kitCount + " starter kit" + s + " available.", ChatFormatting.DARK_GRAY);
+		MessageFunctions.sendTranslatableMessage(source, " ", now ? "collective.starterkit.message.kitcountnow" : "collective.starterkit.message.kitcount", ChatFormatting.DARK_GRAY, kitCount);
 	}
 }

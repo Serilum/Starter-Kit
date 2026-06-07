@@ -85,7 +85,7 @@ public class StarterGearFunctions {
 		MessageFunctions.sendMessage(player, Component.literal(ConfigHandler.chooseKitText.replace("%s", player.getName().getString())).withStyle(ChatFormatting.GOLD).withStyle(ChatFormatting.BOLD), true);
 		MessageFunctions.sendMessage(player, "  /sk choose <kit_name>", ChatFormatting.DARK_GREEN);
 		MessageFunctions.sendMessage(player, "  /sk info <kit_name>", ChatFormatting.DARK_GREEN);
-		MessageFunctions.sendMessage(player, " Available kits: " + StringUtils.join(getActiveKitNames(), ", "), ChatFormatting.GRAY, true);
+		MessageFunctions.sendTranslatableMessage(player, " ", "collective.starterkit.message.availablekits", true, ChatFormatting.GRAY, StringUtils.join(getActiveKitNames(), ", "));
 	}
 
 	public static String giveStarterKit(Player player, @Nullable CommandSourceStack commandSource) {
@@ -150,7 +150,7 @@ public class StarterGearFunctions {
 		}
 
 		if (commandSource != null) {
-			MessageFunctions.sendMessage(commandSource, player.getName().getString() + " has been given the '" + Util.formatKitName(kitName) + "' starter kit!", ChatFormatting.DARK_GREEN, true);
+			MessageFunctions.sendTranslatableMessage(commandSource, "collective.starterkit.message.givenstarterkit", true, ChatFormatting.DARK_GREEN, player.getName().getString(), Util.formatKitName(kitName));
 		}
 
 		StarterCheckFunctions.addPlayerToTrackingMap(player);

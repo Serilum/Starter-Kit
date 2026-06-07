@@ -1,4 +1,5 @@
 package com.natamus.starterkit.inventory;
+import com.natamus.starterkit.util.Reference;
 
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -88,7 +89,7 @@ public class StarterKitInventoryScreen extends StarterKitEffectRenderingInventor
 			StarterClientFunctions.cycleChooseKitScreen(this.minecraft.player, true);
 		}).bounds(this.width/2 + 47, this.height/2 - 21, 30, 16).build();
 
-		Button chooseKitButton = Button.builder(Component.literal("Choose Starter Kit"), (button) -> {
+		Button chooseKitButton = Button.builder(Component.translatable("collective.starterkit.gui.choose", Reference.NAME), (button) -> {
             StarterClientFunctions.clearPriorEquipmentCache();
 			Dispatcher.sendToServer(new ToServerSendKitChoicePacket(VariablesClient.cachedStarterKitName));
             ConstantsClient.mc.setScreen(null);

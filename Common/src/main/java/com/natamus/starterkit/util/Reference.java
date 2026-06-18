@@ -4,5 +4,5 @@ public class Reference {
 	public static final String MOD_ID = "starterkit";
 	public static final String NAME = "Starter Kit";
 	public static final String VERSION = "8.1";
-	public static final String ACCEPTED_VERSIONS = "[26.1.2]";
+	public static final String ACCEPTED_VERSIONS = "[26.2.0]";
 }

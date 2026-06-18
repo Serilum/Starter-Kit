@@ -21,7 +21,7 @@ public class StarterClientEvents {
 
 		// Adds compatibility with other modded startup screens.
 		if (VariablesClient.openChooseKitScreen) {
-			if (ConstantsClient.mc.screen != null) {
+			if (ConstantsClient.mc.gui.screen()!= null) {
 				VariablesClient.anotherScreenWasOpen = true;
 			}
 			else if (VariablesClient.anotherScreenWasOpen || VariablesClient.openChooseKitScreenTicks > 60) {
@@ -39,7 +39,7 @@ public class StarterClientEvents {
 			return;
 		}
 
-		if (ConstantsClient.mc.screen instanceof StarterKitInventoryScreen) {
+		if (ConstantsClient.mc.gui.screen()instanceof StarterKitInventoryScreen) {
 			return;
 		}
 

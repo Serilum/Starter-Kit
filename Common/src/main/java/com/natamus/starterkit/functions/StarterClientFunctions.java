@@ -35,7 +35,7 @@ public class StarterClientFunctions {
             return;
 		}
 
-		ConstantsClient.mc.setScreen(new StarterKitInventoryScreen(player));
+		ConstantsClient.mc.setScreenAndShow(new StarterKitInventoryScreen(player));
 	}
 
 	public static void cycleChooseKitScreen(Player player, boolean next) {
@@ -77,7 +77,7 @@ public class StarterClientFunctions {
             return;
 		}
 
-		ConstantsClient.mc.setScreen(new StarterKitInventoryScreen(player));
+		ConstantsClient.mc.setScreenAndShow(new StarterKitInventoryScreen(player));
 	}
 
 	public static void setCachedStarterKitInventory(Player player, int kitIndex) {
@@ -179,7 +179,9 @@ public class StarterClientFunctions {
 			player.getInventory().setItem(i, VariablesClient.priorPlayerHotbar.get(i).copy());
 		}
 
-		ConstantsClient.mc.options.hideGui = false;
+		if (ConstantsClient.mc.gui.hud.isHidden()) {
+			ConstantsClient.mc.gui.hud.toggle();
+		}
 		return true;
 	}
 
@@ -195,7 +197,9 @@ public class StarterClientFunctions {
 		VariablesClient.priorPlayerEquipment = null;
 		VariablesClient.priorPlayerHotbar = null;
 
-		ConstantsClient.mc.options.hideGui = false;
+		if (ConstantsClient.mc.gui.hud.isHidden()) {
+			ConstantsClient.mc.gui.hud.toggle();
+		}
 	}
 
 	public static void selectFirstSlot() {

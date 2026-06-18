@@ -73,7 +73,9 @@ public class StarterKitInventoryScreen extends StarterKitAbstractContainerScreen
         player.setItemSlot(EquipmentSlot.MAINHAND, itemList.get(0));
         player.setItemSlot(EquipmentSlot.OFFHAND, offhandList.get(0));
 
-        ConstantsClient.mc.options.hideGui = true;
+        if (!ConstantsClient.mc.gui.hud.isHidden()) {
+            ConstantsClient.mc.gui.hud.toggle();
+        }
     }
 
     public void containerTick() {
@@ -102,7 +104,7 @@ public class StarterKitInventoryScreen extends StarterKitAbstractContainerScreen
 		Button chooseKitButton = Button.builder(Component.translatable("collective.starterkit.gui.choose", Reference.NAME), (button) -> {
             StarterClientFunctions.clearPriorEquipmentCache();
 			Dispatcher.sendToServer(new ToServerSendKitChoicePacket(VariablesClient.cachedStarterKitName));
-            ConstantsClient.mc.setScreen(null);
+            ConstantsClient.mc.gui.setScreen(null);
 		}).bounds(this.width/2 - 60, this.height/2 + 88, 120, 20).build();
 
 		this.addRenderableWidget(previousKitButton);

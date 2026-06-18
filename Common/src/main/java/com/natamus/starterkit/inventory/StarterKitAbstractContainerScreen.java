@@ -4,7 +4,6 @@ import com.google.common.collect.Sets;
 import com.natamus.starterkit.data.Constants;
 import com.natamus.starterkit.util.Reference;
 import net.minecraft.ChatFormatting;
-import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -16,6 +15,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerInput;
@@ -23,7 +23,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2i;
 
 import java.util.Iterator;
 import java.util.List;
@@ -182,7 +181,7 @@ public abstract class StarterKitAbstractContainerScreen<T extends AbstractContai
             this.extractBlurredBackground(guiGraphics);
             this.extractMenuBackground(guiGraphics);
         }
-        this.minecraft.gui.extractDeferredSubtitles();
+        this.minecraft.gui.hud.extractDeferredSubtitles();
 
         this.renderBg(guiGraphics, partialTick, mouseX, mouseY);
     }
@@ -324,113 +323,76 @@ public abstract class StarterKitAbstractContainerScreen<T extends AbstractContai
         return null;
     }
 
-    @SuppressWarnings("IfStatementWithIdenticalBranches")
-    public boolean mouseClicked(@NotNull MouseButtonEvent mouseButtonEvent, boolean $$1) {
-        if (super.mouseClicked(mouseButtonEvent, $$1)) {
-            return true;
+@SuppressWarnings("IfStatementWithIdenticalBranches")
+public boolean mouseClicked(@NotNull MouseButtonEvent mouseButtonEvent, boolean $$1) {
+    if (super.mouseClicked(mouseButtonEvent, $$1)) {
+        return true;
+    } else {
+        boolean $$2 = this.minecraft.options.keyPickItem.matchesMouse(mouseButtonEvent) && this.minecraft.player.hasInfiniteMaterials();
+        Slot $$3 = this.getHoveredSlot(mouseButtonEvent.x(), mouseButtonEvent.y());
+        this.doubleclick = this.lastClickSlot == $$3 && $$1;
+        this.skipNextRelease = false;
+        if (mouseButtonEvent.button() != 0 && mouseButtonEvent.button() != 1 && !$$2) {
+            this.checkHotbarMouseClicked(mouseButtonEvent);
         } else {
-            boolean $$2 = this.minecraft.options.keyPickItem.matchesMouse(mouseButtonEvent) && this.minecraft.player.hasInfiniteMaterials();
-            Slot $$3 = this.getHoveredSlot(mouseButtonEvent.x(), mouseButtonEvent.y());
-            this.doubleclick = this.lastClickSlot == $$3 && $$1;
-            this.skipNextRelease = false;
-            if (mouseButtonEvent.button() != 0 && mouseButtonEvent.button() != 1 && !$$2) {
-                this.checkHotbarMouseClicked(mouseButtonEvent);
-            } else {
-                int $$4 = this.leftPos;
-                int $$5 = this.topPos;
-                boolean $$6 = this.hasClickedOutside(mouseButtonEvent.x(), mouseButtonEvent.y(), $$4, $$5);
-                int $$7 = -1;
-                if ($$3 != null) {
-                    $$7 = $$3.index;
-                }
+            int $$4 = this.leftPos;
+            int $$5 = this.topPos;
+            boolean $$6 = this.hasClickedOutside(mouseButtonEvent.x(), mouseButtonEvent.y(), $$4, $$5);
+            int $$7 = -1;
+            if ($$3 != null) {
+                $$7 = $$3.index;
+            }
 
-                if ($$6) {
-                    $$7 = -999;
-                }
+            if ($$6) {
+                $$7 = -999;
+            }
 
-                if ((Boolean)this.minecraft.options.touchscreen().get() && $$6 && this.menu.getCarried().isEmpty()) {
-                    this.onClose();
-                    return true;
-                }
-
-                if ($$7 != -1) {
-                    if ((Boolean)this.minecraft.options.touchscreen().get()) {
-                        if ($$3 != null && $$3.hasItem()) {
-                            this.clickedSlot = $$3;
-                            this.draggingItem = ItemStack.EMPTY;
-                            this.isSplittingStack = mouseButtonEvent.button() == 1;
-                        } else {
-                            this.clickedSlot = null;
+            if ($$7 != -1 && !this.isQuickCrafting) {
+                if (this.menu.getCarried().isEmpty()) {
+                    if ($$2) {
+                        this.slotClicked($$3, $$7, mouseButtonEvent.button(), ContainerInput.CLONE);
+                    } else {
+                        boolean $$8 = $$7 != -999 && mouseButtonEvent.hasShiftDown();
+                        ContainerInput $$9 = ContainerInput.PICKUP;
+                        if ($$8) {
+                            this.lastQuickMoved = $$3 != null && $$3.hasItem() ? $$3.getItem().copy() : ItemStack.EMPTY;
+                            $$9 = ContainerInput.QUICK_MOVE;
+                        } else if ($$7 == -999) {
+                            $$9 = ContainerInput.THROW;
                         }
-                    } else if (!this.isQuickCrafting) {
-                        if (this.menu.getCarried().isEmpty()) {
-                            if ($$2) {
-                                this.slotClicked($$3, $$7, mouseButtonEvent.button(), ContainerInput.CLONE);
-                            } else {
-                                boolean $$8 = $$7 != -999 && mouseButtonEvent.hasShiftDown();
-                                ContainerInput $$9 = ContainerInput.PICKUP;
-                                if ($$8) {
-                                    this.lastQuickMoved = $$3 != null && $$3.hasItem() ? $$3.getItem().copy() : ItemStack.EMPTY;
-                                    $$9 = ContainerInput.QUICK_MOVE;
-                                } else if ($$7 == -999) {
-                                    $$9 = ContainerInput.THROW;
-                                }
 
-                                this.slotClicked($$3, $$7, mouseButtonEvent.button(), $$9);
-                            }
+                        this.slotClicked($$3, $$7, mouseButtonEvent.button(), $$9);
+                    }
 
-                            this.skipNextRelease = true;
-                        } else {
-                            this.isQuickCrafting = true;
-                            this.quickCraftingButton = mouseButtonEvent.button();
-                            this.quickCraftSlots.clear();
-                            if (mouseButtonEvent.button() == 0) {
-                                this.quickCraftingType = 0;
-                            } else if (mouseButtonEvent.button() == 1) {
-                                this.quickCraftingType = 1;
-                            } else if ($$2) {
-                                this.quickCraftingType = 2;
-                            }
-                        }
+                    this.skipNextRelease = true;
+                } else {
+                    this.isQuickCrafting = true;
+                    this.quickCraftingButton = mouseButtonEvent.button();
+                    this.quickCraftSlots.clear();
+                    if (mouseButtonEvent.button() == 0) {
+                        this.quickCraftingType = 0;
+                    } else if (mouseButtonEvent.button() == 1) {
+                        this.quickCraftingType = 1;
+                    } else if ($$2) {
+                        this.quickCraftingType = 2;
                     }
                 }
             }
-
-            this.lastClickSlot = $$3;
-            return true;
         }
+
+        this.lastClickSlot = $$3;
+        return true;
     }
+}
 
     protected boolean hasClickedOutside(double $$0, double $$1, int $$2, int $$3) {
         return $$0 < (double)$$2 || $$1 < (double)$$3 || $$0 >= (double)($$2 + this.imageWidth) || $$1 >= (double)($$3 + this.imageHeight);
     }
 
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        Slot slot = this.findSlot(mouseX, mouseY);
+    public boolean mouseDragged(@NotNull MouseButtonEvent mouseButtonEvent, double dragX, double dragY) {
+        Slot slot = this.findSlot(mouseButtonEvent.x(), mouseButtonEvent.y());
         ItemStack itemStack = this.menu.getCarried();
-        if (this.clickedSlot != null && this.minecraft.options.touchscreen().get()) {
-            if (button == 0 || button == 1) {
-                if (this.draggingItem.isEmpty()) {
-                    if (slot != this.clickedSlot && !this.clickedSlot.getItem().isEmpty()) {
-                        this.draggingItem = this.clickedSlot.getItem().copy();
-                    }
-                } else if (this.draggingItem.getCount() > 1 && slot != null && AbstractContainerMenu.canItemQuickReplace(slot, this.draggingItem, false)) {
-                    long l = Util.getMillis();
-                    if (this.quickdropSlot == slot) {
-                        if (l - this.quickdropTime > 500L) {
-                            this.slotClicked(this.clickedSlot, this.clickedSlot.index, 0, ContainerInput.PICKUP);
-                            this.slotClicked(slot, slot.index, 1, ContainerInput.PICKUP);
-                            this.slotClicked(this.clickedSlot, this.clickedSlot.index, 0, ContainerInput.PICKUP);
-                            this.quickdropTime = l + 750L;
-                            this.draggingItem.shrink(1);
-                        }
-                    } else {
-                        this.quickdropSlot = slot;
-                        this.quickdropTime = l;
-                    }
-                }
-            }
-        } else if (this.isQuickCrafting && slot != null && !itemStack.isEmpty() && (itemStack.getCount() > this.quickCraftSlots.size() || this.quickCraftingType == 2) && AbstractContainerMenu.canItemQuickReplace(slot, itemStack, true) && slot.mayPlace(itemStack) && this.menu.canDragTo(slot)) {
+        if (this.isQuickCrafting && slot != null && !itemStack.isEmpty() && (itemStack.getCount() > this.quickCraftSlots.size() || this.quickCraftingType == 2) && AbstractContainerMenu.canItemQuickReplace(slot, itemStack, true) && slot.mayPlace(itemStack) && this.menu.canDragTo(slot)) {
             this.quickCraftSlots.add(slot);
             this.recalculateQuickCraftRemaining();
         }
@@ -479,29 +441,7 @@ public abstract class StarterKitAbstractContainerScreen<T extends AbstractContai
                 return true;
             }
 
-            if (this.clickedSlot != null && (Boolean)this.minecraft.options.touchscreen().get()) {
-                if ($$0.button() == 0 || $$0.button() == 1) {
-                    if (this.draggingItem.isEmpty() && $$1 != this.clickedSlot) {
-                        this.draggingItem = this.clickedSlot.getItem();
-                    }
-
-                    boolean $$7 = AbstractContainerMenu.canItemQuickReplace($$1, this.draggingItem, false);
-                    if ($$5 != -1 && !this.draggingItem.isEmpty() && $$7) {
-                        this.slotClicked(this.clickedSlot, this.clickedSlot.index, $$0.button(), ContainerInput.PICKUP);
-                        this.slotClicked($$1, $$5, 0, ContainerInput.PICKUP);
-                        if (this.menu.getCarried().isEmpty()) {
-                            this.snapbackData = null;
-                        } else {
-                            this.slotClicked(this.clickedSlot, this.clickedSlot.index, $$0.button(), ContainerInput.PICKUP);
-                            this.snapbackData = new SnapbackData(this.draggingItem, new Vector2i((int)$$0.x(), (int)$$0.y()), new Vector2i(this.clickedSlot.x + $$2, this.clickedSlot.y + $$3), Util.getMillis());
-                        }
-                    } else if (!this.draggingItem.isEmpty()) {
-                        this.snapbackData = new SnapbackData(this.draggingItem, new Vector2i((int)$$0.x(), (int)$$0.y()), new Vector2i(this.clickedSlot.x + $$2, this.clickedSlot.y + $$3), Util.getMillis());
-                    }
-
-                    this.clearDraggingState();
-                }
-            } else if (this.isQuickCrafting && !this.quickCraftSlots.isEmpty()) {
+            if (this.isQuickCrafting && !this.quickCraftSlots.isEmpty()) {
                 this.slotClicked((Slot)null, -999, AbstractContainerMenu.getQuickcraftMask(0, this.quickCraftingType), ContainerInput.QUICK_CRAFT);
 
                 for(Slot $$8 : this.quickCraftSlots) {

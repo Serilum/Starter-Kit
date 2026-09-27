@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "starterkit",
-  "version": "8.1",
+  "version": "8.2",
 
   "name": "Starter Kit",
   "description": "Gives players who join the world for the first time configurable starter gear.",
@@ -26,7 +26,7 @@
     "fabric-api": "*",
     "minecraft": ">=26.3",
     "java": ">=25",
-    "collective": ">=8.39"
+    "collective": ">=8.40"
   },
 
   "custom": {

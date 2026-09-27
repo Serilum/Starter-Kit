@@ -9,12 +9,12 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import org.jetbrains.annotations.NotNull;
 
 public class IntegrateNeoForgeConfig {
-    public static void registerScreen(ModLoadingContext modLoadingContext) {
-        modLoadingContext.registerExtensionPoint(IConfigScreenFactory.class, () -> new IConfigScreenFactory() {
-            @Override
-            public @NotNull Screen createScreen(@NotNull ModContainer modContainer, @NotNull Screen screen) {
-                return DuskConfig.DuskConfigScreen.getScreen(screen, Reference.MOD_ID);
-            }
-        });
-    }
+	public static void registerScreen(ModLoadingContext modLoadingContext) {
+		modLoadingContext.registerExtensionPoint(IConfigScreenFactory.class, () -> new IConfigScreenFactory() {
+			@Override
+			public @NotNull Screen createScreen(@NotNull ModContainer modContainer, @NotNull Screen screen) {
+				return DuskConfig.DuskConfigScreen.getScreen(screen, Reference.MOD_ID);
+			}
+		});
+	}
 }

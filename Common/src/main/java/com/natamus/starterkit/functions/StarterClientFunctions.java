@@ -32,7 +32,7 @@ public class StarterClientFunctions {
 
 		if (VariablesClient.cachedStarterKitInventory == null) {
 			Constants.logger.warn(Constants.logPrefix + "Cannot initiate StarterKitInventoryScreen, the cached starter kit inventory is null.");
-            return;
+			return;
 		}
 
 		ConstantsClient.mc.setScreenAndShow(new StarterKitInventoryScreen(player));
@@ -74,7 +74,7 @@ public class StarterClientFunctions {
 
 		if (VariablesClient.cachedStarterKitInventory == null) {
 			Constants.logger.warn(Constants.logPrefix + "Cannot cycle StarterKitInventoryScreen, the cached starter kit inventory is null.");
-            return;
+			return;
 		}
 
 		ConstantsClient.mc.setScreenAndShow(new StarterKitInventoryScreen(player));
@@ -96,7 +96,7 @@ public class StarterClientFunctions {
 		String gearString = VariablesClient.cachedStarterGearEntries.get(kitName);
 
 		if (gearString == null) {
-            Constants.logger.warn(Constants.logPrefix + "Unable to show the choose kit screen, gearString is null from kit name '{}' and kit index {}.", kitName, kitIndex);
+			Constants.logger.warn(Constants.logPrefix + "Unable to show the choose kit screen, gearString is null from kit name '{}' and kit index {}.", kitName, kitIndex);
 			return;
 		}
 

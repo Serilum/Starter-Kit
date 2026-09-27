@@ -27,7 +27,7 @@ public class StarterServerEvents {
 			return;
 		}
 
-        if (player.entityTags().contains("collective.firstJoin." + Reference.MOD_ID)) { // Version < 5.5 backwards compatibility
+		if (player.entityTags().contains("collective.firstJoin." + Reference.MOD_ID)) { // Version < 5.5 backwards compatibility
 			return;
 		}
 
@@ -51,7 +51,7 @@ public class StarterServerEvents {
 			
 			Entity sourceentity = source.getEntity();
 			if (sourceentity instanceof Player player) {
-                Level level = player.level();
+				Level level = player.level();
 
 				if (!level.isClientSide()) {
 					StarterGearFunctions.initStarterKitHandle(level, player, null);

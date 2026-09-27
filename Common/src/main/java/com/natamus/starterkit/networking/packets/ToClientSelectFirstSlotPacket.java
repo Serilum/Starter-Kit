@@ -8,21 +8,21 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 
 public class ToClientSelectFirstSlotPacket {
-    public static final Identifier CHANNEL = Identifier.fromNamespaceAndPath(Reference.MOD_ID, "to_client_select_first_slot_packet");
+	public static final Identifier CHANNEL = Identifier.fromNamespaceAndPath(Reference.MOD_ID, "to_client_select_first_slot_packet");
 
-    public ToClientSelectFirstSlotPacket() {
-    }
+	public ToClientSelectFirstSlotPacket() {
+	}
 
-    public static ToClientSelectFirstSlotPacket decode(FriendlyByteBuf buf) {
-        return new ToClientSelectFirstSlotPacket();
-    }
+	public static ToClientSelectFirstSlotPacket decode(FriendlyByteBuf buf) {
+		return new ToClientSelectFirstSlotPacket();
+	}
 
-    public void encode(FriendlyByteBuf buf) {
-    }
+	public void encode(FriendlyByteBuf buf) {
+	}
 
-    public static void handle(PacketContext<ToClientSelectFirstSlotPacket> ctx) {
-        if (ctx.side().equals(Side.CLIENT)) {
-            StarterClientFunctions.selectFirstSlot();
-        }
-    }
+	public static void handle(PacketContext<ToClientSelectFirstSlotPacket> ctx) {
+		if (ctx.side().equals(Side.CLIENT)) {
+			StarterClientFunctions.selectFirstSlot();
+		}
+	}
 }

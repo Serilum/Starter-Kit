@@ -106,7 +106,7 @@ public class StarterGearFunctions {
 			String randomKitName = allKitNames[GlobalVariables.random.nextInt(allKitNames.length)];
 
 			if (!Variables.starterGearEntries.containsKey(randomKitName)) {
-                Constants.logger.warn(Constants.logPrefix + "Unable to find a starter kit to give with the name '{}'.", randomKitName);
+				Constants.logger.warn(Constants.logPrefix + "Unable to find a starter kit to give with the name '{}'.", randomKitName);
 				return null;
 			}
 

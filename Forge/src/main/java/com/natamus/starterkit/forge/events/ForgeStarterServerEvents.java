@@ -32,8 +32,8 @@ public class ForgeStarterServerEvents {
 		StarterServerEvents.onCommand("", e.getParseResults());
 	}
 
-    @SubscribeEvent
-    public static void registerCommands(RegisterCommandsEvent e) {
-    	CommandStarterkit.register(e.getDispatcher());
-    }
+	@SubscribeEvent
+	public static void registerCommands(RegisterCommandsEvent e) {
+		CommandStarterkit.register(e.getDispatcher());
+	}
 }

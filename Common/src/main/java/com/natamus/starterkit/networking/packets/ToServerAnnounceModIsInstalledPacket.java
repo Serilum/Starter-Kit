@@ -13,28 +13,28 @@ import net.minecraft.world.entity.player.Player;
 import java.util.UUID;
 
 public class ToServerAnnounceModIsInstalledPacket {
-    public static final Identifier CHANNEL = Identifier.fromNamespaceAndPath(Reference.MOD_ID, "to_server_announce_mod_is_installed_packet");
+	public static final Identifier CHANNEL = Identifier.fromNamespaceAndPath(Reference.MOD_ID, "to_server_announce_mod_is_installed_packet");
 
-    public ToServerAnnounceModIsInstalledPacket() {
-    }
+	public ToServerAnnounceModIsInstalledPacket() {
+	}
 
-    public static ToServerAnnounceModIsInstalledPacket decode(FriendlyByteBuf buf) {
-        return new ToServerAnnounceModIsInstalledPacket();
-    }
+	public static ToServerAnnounceModIsInstalledPacket decode(FriendlyByteBuf buf) {
+		return new ToServerAnnounceModIsInstalledPacket();
+	}
 
-    public void encode(FriendlyByteBuf buf) {
-    }
+	public void encode(FriendlyByteBuf buf) {
+	}
 
-    public static void handle(PacketContext<ToServerAnnounceModIsInstalledPacket> ctx) {
-        if (ctx.side().equals(Side.SERVER)) {
-            Player player = ctx.sender();
-            UUID uuid = player.getUUID();
+	public static void handle(PacketContext<ToServerAnnounceModIsInstalledPacket> ctx) {
+		if (ctx.side().equals(Side.SERVER)) {
+			Player player = ctx.sender();
+			UUID uuid = player.getUUID();
 
-            if (!Variables.playersWithModInstalledOnClient.contains(uuid)) {
-                Variables.playersWithModInstalledOnClient.add(uuid);
-            }
+			if (!Variables.playersWithModInstalledOnClient.contains(uuid)) {
+				Variables.playersWithModInstalledOnClient.add(uuid);
+			}
 
-            Dispatcher.sendToClient(new ToClientReceiveKitDataPacket(Variables.starterGearEntries, Variables.starterKitDescriptions), (ServerPlayer)player);
-        }
-    }
+			Dispatcher.sendToClient(new ToClientReceiveKitDataPacket(Variables.starterGearEntries, Variables.starterKitDescriptions), (ServerPlayer)player);
+		}
+	}
 }

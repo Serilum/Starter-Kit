@@ -16,42 +16,42 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 public class ToServerSendKitChoicePacket {
-    public static final Identifier CHANNEL = Identifier.fromNamespaceAndPath(Reference.MOD_ID, "to_server_send_kit_choice_packet");
+	public static final Identifier CHANNEL = Identifier.fromNamespaceAndPath(Reference.MOD_ID, "to_server_send_kit_choice_packet");
 
-    private final String kitName;
+	private final String kitName;
 
-    public ToServerSendKitChoicePacket(String kitNameIn) {
-        this.kitName = kitNameIn;
-    }
+	public ToServerSendKitChoicePacket(String kitNameIn) {
+		this.kitName = kitNameIn;
+	}
 
-    public static ToServerSendKitChoicePacket decode(FriendlyByteBuf buf) {
-        String kitNameIn = buf.readUtf();
+	public static ToServerSendKitChoicePacket decode(FriendlyByteBuf buf) {
+		String kitNameIn = buf.readUtf();
 
-        return new ToServerSendKitChoicePacket(kitNameIn);
-    }
+		return new ToServerSendKitChoicePacket(kitNameIn);
+	}
 
-    public void encode(FriendlyByteBuf buf) {
-        buf.writeUtf(kitName);
-    }
+	public void encode(FriendlyByteBuf buf) {
+		buf.writeUtf(kitName);
+	}
 
-    public static void handle(PacketContext<ToServerSendKitChoicePacket> ctx) {
-        if (ctx.side().equals(Side.SERVER)) {
-            ToServerSendKitChoicePacket packet = ctx.message();
-            Player player = ctx.sender();
+	public static void handle(PacketContext<ToServerSendKitChoicePacket> ctx) {
+		if (ctx.side().equals(Side.SERVER)) {
+			ToServerSendKitChoicePacket packet = ctx.message();
+			Player player = ctx.sender();
 
-            if (StarterCheckFunctions.shouldPlayerReceiveStarterKit(player)) {
-                Level level = player.level();
-                if (level.getServer().isDedicatedServer()) {
-                    if (ConfigHandler.announcePlayerKitChoiceInDedicatedServer) {
-                        MessageFunctions.broadcastMessage(level, Component.translatable("collective.starterkit.message.chosenkit", player.getName().getString(), Util.formatKitName(packet.kitName)).withStyle(ChatFormatting.DARK_GREEN));
-                    }
-                }
-                else {
-                    MessageFunctions.sendTranslatableMessage(player, "collective.starterkit.message.receivedstarterkit", true, ChatFormatting.DARK_GREEN, Util.formatKitName(packet.kitName));
-                }
+			if (StarterCheckFunctions.shouldPlayerReceiveStarterKit(player)) {
+				Level level = player.level();
+				if (level.getServer().isDedicatedServer()) {
+					if (ConfigHandler.announcePlayerKitChoiceInDedicatedServer) {
+						MessageFunctions.broadcastMessage(level, Component.translatable("collective.starterkit.message.chosenkit", player.getName().getString(), Util.formatKitName(packet.kitName)).withStyle(ChatFormatting.DARK_GREEN));
+					}
+				}
+				else {
+					MessageFunctions.sendTranslatableMessage(player, "collective.starterkit.message.receivedstarterkit", true, ChatFormatting.DARK_GREEN, Util.formatKitName(packet.kitName));
+				}
 
-                StarterGearFunctions.giveStarterKit(player, null, packet.kitName);
-            }
-        }
-    }
+				StarterGearFunctions.giveStarterKit(player, null, packet.kitName);
+			}
+		}
+	}
 }

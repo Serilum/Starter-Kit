@@ -37,7 +37,7 @@ public class ModForge {
 			ForgeStarterClientEvents.registerEventsInBus();
 		}
 
-    	ForgeStarterServerEvents.registerEventsInBus();
+		ForgeStarterServerEvents.registerEventsInBus();
 	}
 
 	private static void setGlobalConstants() {

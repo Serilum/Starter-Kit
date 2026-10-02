@@ -1,22 +1,22 @@
 modLoader="javafml"
 loaderVersion="*"
-license="All rights reserved"
+license="All Rights Reserved"
 issueTrackerURL="https://github.com/Serilum/.issue-tracker/labels/Mod:%20Starter%20Kit"
 iconFile="icon.png"
 
 [[mods]]
 modId="starterkit"
-version="8.2"
+version="8.3"
 displayName="Starter Kit"
 displayURL="https://serilum.com/mod/starter-kit"
-authors="Rick South"
+authors="Serilum"
 description='''Gives players who join the world for the first time configurable starter gear.
 '''
 credits='''Thank you very much to my Membership sponsors for supporting the development of this mod:  
 
 Andrean Olgo, AnyankaT, aternosorg, Cherriesaurus, Linda Jansen, MWS, Tyler Behl   
 
-If you would like to contribute too, check out https://serilum.com/donate. Appreciate it! <3   
+If you would like to contribute too, check out https://serilum.com/donate Appreciate it! <3   
 '''
 
 [[dependencies.starterkit]]

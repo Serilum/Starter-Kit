@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "id": "starterkit",
-  "version": "8.2",
+  "version": "8.3",
 
   "name": "Starter Kit",
   "description": "Gives players who join the world for the first time configurable starter gear.",
-  "authors": [ "Rick South" ],
+  "authors": [ "Serilum" ],
   "contact": {
     "homepage": "https://serilum.com/mod/starter-kit",
     "sources": "https://github.com/Serilum/Starter-Kit",
@@ -16,7 +16,7 @@
   "icon": "icon.png",
 
   "environment": "*",
-  "entrypoints": { "main": [ "com.natamus.starterkit.ModFabric" ], "client": [ "com.natamus.starterkit.ModFabricClient" ], "modmenu": [ "com.natamus.starterkit.fabric.config.IntegrateModMenu" ] },
+  "entrypoints": { "main": [ "com.serilum.starterkit.ModFabric" ], "client": [ "com.serilum.starterkit.ModFabricClient" ], "modmenu": [ "com.serilum.starterkit.fabric.config.IntegrateModMenu" ] },
   "mixins": [
     "starterkit.mixins.json"
   ],
@@ -41,7 +41,7 @@
 	  " ",
 	  "Thank you very much to my Membership sponsors for supporting the development of this mod!",
 	  " ",
-	  "If you would like to contribute too, check out https://serilum.com/donate.",
+	  "If you would like to contribute too, check out https://serilum.com/donate",
 	  " ",
 	  "Membership sponsors:",
 	  " Andrean Olgo",

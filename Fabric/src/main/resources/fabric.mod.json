@@ -1,22 +1,22 @@
 {
   "schemaVersion": 1,
   "id": "starterkit",
-  "version": "8.1",
+  "version": "8.3",
 
   "name": "Starter Kit",
   "description": "Gives players who join the world for the first time configurable starter gear.",
-  "authors": [ "Rick South" ],
+  "authors": [ "Serilum" ],
   "contact": {
     "homepage": "https://serilum.com/mod/starter-kit",
     "sources": "https://github.com/Serilum/Starter-Kit",
     "issues": "https://github.com/Serilum/.issue-tracker/labels/Mod:%20Starter%20Kit"
   },
 
-  "license": "All Right Reserved",
+  "license": "All Rights Reserved",
   "icon": "icon.png",
 
   "environment": "*",
-  "entrypoints": { "main": [ "com.natamus.starterkit.ModFabric" ], "client": [ "com.natamus.starterkit.ModFabricClient" ], "modmenu": [ "com.natamus.starterkit.fabric.config.IntegrateModMenu" ] },
+  "entrypoints": { "main": [ "com.serilum.starterkit.ModFabric" ], "client": [ "com.serilum.starterkit.ModFabricClient" ], "modmenu": [ "com.serilum.starterkit.fabric.config.IntegrateModMenu" ] },
   "mixins": [
     "starterkit.mixins.json"
   ],
@@ -26,7 +26,7 @@
     "fabric-api": "*",
     "minecraft": ">=26.2",
     "java": ">=25",
-    "collective": ">=8.29"
+    "collective": ">=8.40"
   },
 
   "custom": {
@@ -41,15 +41,14 @@
 	  " ",
 	  "Thank you very much to my Membership sponsors for supporting the development of this mod!",
 	  " ",
-	  "If you would like to contribute too, check out https://serilum.com/donate.",
+	  "If you would like to contribute too, check out https://serilum.com/donate",
 	  " ",
 	  "Membership sponsors:",
 	  " Andrean Olgo",
+	  " AnyankaT",
 	  " aternosorg",
 	  " Cherriesaurus",
-	  " Josh",
 	  " Linda Jansen",
-	  " Michelle Smith",
 	  " MWS",
 	  " Tyler Behl"
   ]

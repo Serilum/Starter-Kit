@@ -290,7 +290,7 @@ public class StarterGearFunctions {
 				if (!matchingKitDescriptionFile.isFile()) {
 					PrintWriter descriptionWriter = new PrintWriter(Util.configDescriptionPath + File.separator + kitName + ".txt", StandardCharsets.UTF_8);
 
-					descriptionWriter.print("You can edit this description in ./config/starterkit/description/" + kitName + ".txt!");
+					descriptionWriter.print("You can edit this description in ./config/serilum/starterkit/description/" + kitName + ".txt!");
 
 					descriptionWriter.close();
 				}
@@ -362,7 +362,7 @@ public class StarterGearFunctions {
 		if (Variables.starterKitDescriptions.containsKey(kitName.toLowerCase())) {
 			kitDescription = Variables.starterKitDescriptions.get(kitName.toLowerCase());
 
-			if (kitDescription.contains("/config/starterkit/description/")) {
+			if (kitDescription.contains("/starterkit/description/")) {
 				kitDescription = "N/A";
 			}
 		}

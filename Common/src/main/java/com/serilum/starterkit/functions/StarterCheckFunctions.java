@@ -1,6 +1,7 @@
 package com.serilum.starterkit.functions;
 
 import com.natamus.collective.functions.WorldFunctions;
+import com.serilum.starterkit.config.ConfigHandler;
 import com.serilum.starterkit.data.Variables;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
@@ -15,21 +16,37 @@ public class StarterCheckFunctions {
 			return false;
 		}
 
-		MinecraftServer minecraftServer = level.getServer();
-		if (!minecraftServer.isDedicatedServer() && !minecraftServer.isPublished()) {
-			String levelName = WorldFunctions.getWorldFolderName(minecraftServer);
-			if (Variables.trackingMap.get("singleplayer").containsKey(levelName)) {
-				return !Variables.trackingMap.get("singleplayer").get(levelName);
-			}
-		}
-		else {
-			String rawUUID = player.getStringUUID();
-			if (Variables.trackingMap.get("multiplayer").containsKey(rawUUID)) {
-				return !Variables.trackingMap.get("multiplayer").get(rawUUID);
-			}
+		Boolean receivedStarterKit = getTrackedReceivedValue(level.getServer(), player);
+		if (receivedStarterKit == null) {
+			return ConfigHandler.giveStarterKitOnFirstJoin;
 		}
 
-		return true;
+		return !receivedStarterKit;
+	}
+
+	public static boolean hasReceivedStarterKit(Player player) {
+		Level level = player.level();
+		if (level.isClientSide()) {
+			return false;
+		}
+
+		return Boolean.TRUE.equals(getTrackedReceivedValue(level.getServer(), player));
+	}
+
+	private static Boolean getTrackedReceivedValue(MinecraftServer minecraftServer, Player player) {
+		if (isSingleplayerOwner(minecraftServer, player)) {
+			return Variables.trackingMap.get("singleplayer").get(WorldFunctions.getWorldFolderName(minecraftServer));
+		}
+
+		return Variables.trackingMap.get("multiplayer").get(player.getStringUUID());
+	}
+
+	public static boolean isSingleplayerOwner(MinecraftServer minecraftServer, Player player) {
+		if (minecraftServer.isDedicatedServer()) {
+			return false;
+		}
+
+		return minecraftServer.isSingleplayerOwner(player.nameAndId());
 	}
 
 	public static void addPlayerToTrackingMap(Player player) {
@@ -44,7 +61,7 @@ public class StarterCheckFunctions {
 		String rawUUID = player.getStringUUID();
 		Variables.trackingMap.get("multiplayer").put(rawUUID, true);
 
-		if (!minecraftServer.isDedicatedServer()) {
+		if (isSingleplayerOwner(minecraftServer, player)) {
 			String levelName = WorldFunctions.getWorldFolderName(minecraftServer);
 			Variables.trackingMap.get("singleplayer").put(levelName, true);
 		}

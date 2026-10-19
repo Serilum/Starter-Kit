@@ -17,6 +17,7 @@ import java.util.Map;
 public class Constants {
 	public static final Logger logger = LogUtils.getLogger();
 	public static final String logPrefix = "[" + Reference.NAME + "] ";
+	public static final String receivedKitTagPrefix = Reference.MOD_ID + ".kit.";
 
 	public static final Gson gson = new Gson();
 	public static final Gson gsonPretty = new GsonBuilder().setPrettyPrinting().create();

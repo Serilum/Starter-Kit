@@ -193,6 +193,17 @@ public class StarterClientFunctions {
 		clearPriorEquipmentCache();
 	}
 
+	public static void resetChooseKitState() {
+		clearChooseKitScreenRequest();
+		clearStarterKitClientCache();
+	}
+
+	public static void clearChooseKitScreenRequest() {
+		VariablesClient.openChooseKitScreen = false;
+		VariablesClient.anotherScreenWasOpen = false;
+		VariablesClient.openChooseKitScreenTicks = 0;
+	}
+
 	public static void clearPriorEquipmentCache() {
 		VariablesClient.priorPlayerEquipment = null;
 		VariablesClient.priorPlayerHotbar = null;

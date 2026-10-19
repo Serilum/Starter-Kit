@@ -10,6 +10,13 @@ import com.serilum.starterkit.networking.packets.ToServerAnnounceModIsInstalledP
 
 public class StarterClientEvents {
 	public static void onClientTick() {
+		if (ConstantsClient.mc.player == null) {
+			if (VariablesClient.priorPlayerEquipment != null || VariablesClient.openChooseKitScreen) {
+				StarterClientFunctions.resetChooseKitState();
+			}
+			return;
+		}
+
 		// Workaround because getConnection() is null for NeoForge on EntityJoinLevelEvent.
 		if (VariablesClient.waitingForAnnouncement) {
 			if (ConstantsClient.mc.getConnection() != null) {
@@ -21,7 +28,10 @@ public class StarterClientEvents {
 
 		// Adds compatibility with other modded startup screens.
 		if (VariablesClient.openChooseKitScreen) {
-			if (ConstantsClient.mc.gui.screen()!= null) {
+			if (ConstantsClient.mc.gui.screen() instanceof StarterKitInventoryScreen) {
+				StarterClientFunctions.clearChooseKitScreenRequest();
+			}
+			else if (ConstantsClient.mc.gui.screen()!= null) {
 				VariablesClient.anotherScreenWasOpen = true;
 			}
 			else if (VariablesClient.anotherScreenWasOpen || VariablesClient.openChooseKitScreenTicks > 60) {

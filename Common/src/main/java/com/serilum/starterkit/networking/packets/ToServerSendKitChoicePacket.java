@@ -4,6 +4,7 @@ import com.natamus.collective.functions.MessageFunctions;
 import com.natamus.collective.implementations.networking.data.PacketContext;
 import com.natamus.collective.implementations.networking.data.Side;
 import com.serilum.starterkit.config.ConfigHandler;
+import com.serilum.starterkit.data.Variables;
 import com.serilum.starterkit.functions.StarterCheckFunctions;
 import com.serilum.starterkit.functions.StarterGearFunctions;
 import com.serilum.starterkit.util.Reference;
@@ -39,18 +40,25 @@ public class ToServerSendKitChoicePacket {
 			ToServerSendKitChoicePacket packet = ctx.message();
 			Player player = ctx.sender();
 
+			if (ConfigHandler.randomizeMultipleKitsToggle || !Variables.starterGearEntries.containsKey(packet.kitName)) {
+				return;
+			}
+
 			if (StarterCheckFunctions.shouldPlayerReceiveStarterKit(player)) {
+				String kitName = StarterGearFunctions.giveStarterKit(player, null, packet.kitName);
+				if (kitName == null) {
+					return;
+				}
+
 				Level level = player.level();
 				if (level.getServer().isDedicatedServer()) {
 					if (ConfigHandler.announcePlayerKitChoiceInDedicatedServer) {
-						MessageFunctions.broadcastMessage(level, Component.translatable("collective.starterkit.message.chosenkit", player.getName().getString(), Util.formatKitName(packet.kitName)).withStyle(ChatFormatting.DARK_GREEN));
+						MessageFunctions.broadcastMessage(level, Component.translatable("collective.starterkit.message.chosenkit", player.getName().getString(), Util.formatKitName(kitName)).withStyle(ChatFormatting.DARK_GREEN));
 					}
 				}
 				else {
-					MessageFunctions.sendTranslatableMessage(player, "collective.starterkit.message.receivedstarterkit", true, ChatFormatting.DARK_GREEN, Util.formatKitName(packet.kitName));
+					MessageFunctions.sendTranslatableMessage(player, "collective.starterkit.message.receivedstarterkit", true, ChatFormatting.DARK_GREEN, Util.formatKitName(kitName));
 				}
-
-				StarterGearFunctions.giveStarterKit(player, null, packet.kitName);
 			}
 		}
 	}

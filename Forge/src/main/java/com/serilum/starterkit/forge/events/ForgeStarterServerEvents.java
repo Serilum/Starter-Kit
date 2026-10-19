@@ -2,9 +2,11 @@ package com.serilum.starterkit.forge.events;
 
 import com.serilum.starterkit.cmds.CommandStarterkit;
 import com.serilum.starterkit.events.StarterServerEvents;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.listener.Priority;
 import net.minecraftforge.eventbus.api.bus.BusGroup;
@@ -26,7 +28,14 @@ public class ForgeStarterServerEvents {
 	public static void onSpawn(EntityJoinLevelEvent e) {
 		StarterServerEvents.onSpawn(e.getLevel(), e.getEntity());
 	}
-	
+
+	@SubscribeEvent
+	public static void onRespawn(PlayerEvent.PlayerRespawnEvent e) {
+		if (e.getEntity() instanceof ServerPlayer serverPlayer) {
+			StarterServerEvents.onRespawn(serverPlayer, e.isEndConquered());
+		}
+	}
+
 	@SubscribeEvent
 	public static void onCommand(CommandEvent e) {
 		StarterServerEvents.onCommand("", e.getParseResults());

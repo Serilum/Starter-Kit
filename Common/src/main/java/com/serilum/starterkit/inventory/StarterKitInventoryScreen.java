@@ -48,7 +48,7 @@ public class StarterKitInventoryScreen extends StarterKitAbstractContainerScreen
 
 
 	public StarterKitInventoryScreen(Player player) {
-		super(new StarterKitInventoryMenu(player), VariablesClient.cachedStarterKitInventory, Component.literal(Util.formatKitName(VariablesClient.cachedStarterKitName)).withStyle(ChatFormatting.BOLD));
+		super(new StarterKitInventoryMenu(player), VariablesClient.cachedStarterKitInventory, Util.getKitNameComponent(VariablesClient.cachedStarterKitName).withStyle(ChatFormatting.BOLD));
 
 		if (player == null) {
 			return;
@@ -79,6 +79,14 @@ public class StarterKitInventoryScreen extends StarterKitAbstractContainerScreen
 	}
 
 	public void containerTick() {
+	}
+
+	public void onClose() {
+		if (ConfigHandler.lockKitChoiceScreen) {
+			return;
+		}
+
+		super.onClose();
 	}
 
 	protected void init() {
@@ -119,7 +127,7 @@ public class StarterKitInventoryScreen extends StarterKitAbstractContainerScreen
 		}
 
 		// Header
-		String headerString = ConfigHandler.chooseKitText.replace("%s", playerName);
+		String headerString = Util.getCustomTextComponent(ConfigHandler.chooseKitText, playerName).getString();
 		if (playerName.isEmpty()) {
 			headerString = headerString.replace(", p", "P");
 		}
@@ -129,7 +137,7 @@ public class StarterKitInventoryScreen extends StarterKitAbstractContainerScreen
 		guiGraphics.text(this.font, headerComponent, -((headerWidth - this.imageWidth)/2), -16, 0xFFFFFFFF, true);
 
 		// Kit Name
-		String fullKitName = Util.formatKitName(VariablesClient.cachedStarterKitName);
+		String fullKitName = Util.getKitNameComponent(VariablesClient.cachedStarterKitName).getString();
 		String kitName = fullKitName;
 		while (this.font.width(kitName) > 88) {
 			kitName = Util.removeLastChar(kitName);
@@ -147,7 +155,7 @@ public class StarterKitInventoryScreen extends StarterKitAbstractContainerScreen
 			matrixStack.pushMatrix();
 
 			String kitDescription = VariablesClient.cachedStarterKitDescriptions.get(VariablesClient.cachedStarterKitName.toLowerCase());
-			Component descriptionComponent = Component.literal(kitDescription);
+			Component descriptionComponent = Util.getCustomTextComponent(kitDescription);
 
 			matrixStack.scale(0.66F, 0.66F);
 

@@ -8,6 +8,8 @@ import java.util.UUID;
 public class Variables {
 	public static HashMap<String, String> starterGearEntries = new HashMap<>();
 	public static HashMap<String, String> starterKitDescriptions = new HashMap<>();
+	public static HashMap<String, List<String>> starterKitCommands = new HashMap<>();
+	public static HashMap<String, String> starterKitModSlotGear = new HashMap<>();
 
 	public static HashMap<String, HashMap<String, Boolean>> trackingMap = new HashMap<>();
 	public static List<UUID> playersWithModInstalledOnClient = new ArrayList<>();

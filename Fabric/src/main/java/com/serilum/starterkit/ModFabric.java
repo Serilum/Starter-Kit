@@ -9,11 +9,13 @@ import com.serilum.starterkit.events.StarterServerEvents;
 import com.serilum.starterkit.util.Reference;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
 public class ModFabric implements ModInitializer {
@@ -39,6 +41,10 @@ public class ModFabric implements ModInitializer {
 
 		ServerEntityEvents.ENTITY_LOAD.register((Entity entity, ServerLevel world) -> {
 			StarterServerEvents.onSpawn(world, entity);
+		});
+
+		ServerPlayerEvents.AFTER_RESPAWN.register((ServerPlayer oldPlayer, ServerPlayer newPlayer, boolean alive) -> {
+			StarterServerEvents.onRespawn(newPlayer, alive);
 		});
 
 		CollectiveCommandEvents.ON_COMMAND_PARSE.register((String string, ParseResults<CommandSourceStack> parse) -> {

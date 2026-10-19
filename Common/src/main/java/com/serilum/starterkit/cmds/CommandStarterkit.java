@@ -47,6 +47,8 @@ public class CommandStarterkit {
 				.then(Commands.argument("kit_name", StringArgumentType.string()).suggests(StarterCommandFunctions.activeKitSuggestions)
 				.then(Commands.argument("target", EntityArgument.player())
 				.executes((command) -> {
+					if (!permissionCheck(command.getSource())) { return 0; }
+
 					Player targetPlayer = EntityArgument.getPlayer(command, "target");
 					String kitName = Util.findCorrectKitNameFromInput(StringArgumentType.getString(command, "kit_name"));
 
@@ -169,7 +171,7 @@ public class CommandStarterkit {
 					StarterDataFunctions.resetTrackingForPlayer(targetPlayer);
 					StarterGearFunctions.initStarterKitHandle(level, targetPlayer, source);
 
-					if (ConfigHandler.randomizeMultipleKitsToggle && Variables.starterGearEntries.size() > 1) {
+					if (!ConfigHandler.randomizeMultipleKitsToggle && Variables.starterGearEntries.size() > 1) {
 						MessageFunctions.sendTranslatableMessage(source, "collective.starterkit.message.givenchoicestarter", true, ChatFormatting.DARK_GREEN, targetPlayer.getName().getString());
 					}
 					return 1;
@@ -188,13 +190,13 @@ public class CommandStarterkit {
 
 					Player targetPlayer = EntityArgument.getPlayer(command, "target");
 					String kitName = Util.findCorrectKitNameFromInput(StringArgumentType.getString(command, "kit_name"));
+					if (!Variables.starterGearEntries.containsKey(kitName)) {
+						MessageFunctions.sendTranslatableMessage(source, "collective.starterkit.message.starterkitexist", ChatFormatting.RED, kitName);
+						return 0;
+					}
 
 					StarterDataFunctions.resetTrackingForPlayer(targetPlayer);
 					StarterGearFunctions.initStarterKitHandle(level, targetPlayer, source, kitName);
-
-					if (ConfigHandler.randomizeMultipleKitsToggle && Variables.starterGearEntries.size() > 1) {
-						MessageFunctions.sendTranslatableMessage(source, "collective.starterkit.message.givenchoicestarter", true, ChatFormatting.DARK_GREEN, targetPlayer.getName().getString());
-					}
 					return 1;
 				}))))
 

@@ -4,8 +4,10 @@ import com.natamus.collective.data.GlobalVariables;
 import com.natamus.collective.functions.GearFunctions;
 import com.natamus.collective.functions.ItemFunctions;
 import com.natamus.collective.functions.MessageFunctions;
+import com.natamus.collective.functions.NumberFunctions;
 import com.natamus.collective.functions.TaskFunctions;
 import com.natamus.collective.implementations.networking.api.Dispatcher;
+import com.serilum.starterkit.compat.CuriosTrinketsCompat;
 import com.serilum.starterkit.config.ConfigHandler;
 import com.serilum.starterkit.data.Constants;
 import com.serilum.starterkit.data.Variables;
@@ -16,6 +18,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
@@ -42,12 +46,13 @@ public class StarterGearFunctions {
 		final UUID uuid = player.getUUID();
 
 		TaskFunctions.enqueueCollectiveServerTask(level.getServer(), () -> {
-			if (StarterCheckFunctions.shouldPlayerReceiveStarterKit(level, player) || commandSource != null) {
-				if (ConfigHandler.usePotionEffectsInStarterKit) {
-					player.removeAllEffects();
-				}
+			if (player.isRemoved()) {
+				return;
+			}
 
+			if (StarterCheckFunctions.shouldPlayerReceiveStarterKit(level, player) || commandSource != null) {
 				if (!ConfigHandler.randomizeMultipleKitsToggle && Variables.starterGearEntries.size() > 1 && kitName.isEmpty()) {
+					Variables.playersWithModInstalledOnClient.remove(uuid);
 					Dispatcher.sendToClient(new ToClientAskIfModIsInstalledPacket(), (ServerPlayer) player);
 
 					TaskFunctions.enqueueCollectiveServerTask(level.getServer(), () -> {
@@ -82,7 +87,7 @@ public class StarterGearFunctions {
 			return;
 		}
 
-		MessageFunctions.sendMessage(player, Component.literal(ConfigHandler.chooseKitText.replace("%s", player.getName().getString())).withStyle(ChatFormatting.GOLD).withStyle(ChatFormatting.BOLD), true);
+		MessageFunctions.sendMessage(player, Util.getCustomTextComponent(ConfigHandler.chooseKitText, player.getName().getString()).withStyle(ChatFormatting.GOLD).withStyle(ChatFormatting.BOLD), true);
 		MessageFunctions.sendMessage(player, "  /sk choose <kit_name>", ChatFormatting.DARK_GREEN);
 		MessageFunctions.sendMessage(player, "  /sk info <kit_name>", ChatFormatting.DARK_GREEN);
 		MessageFunctions.sendTranslatableMessage(player, " ", "collective.starterkit.message.availablekits", true, ChatFormatting.GRAY, StringUtils.join(getActiveKitNames(), ", "));
@@ -92,7 +97,7 @@ public class StarterGearFunctions {
 		return giveStarterKit(player, commandSource, "");
 	}
 	public static String giveStarterKit(Player player, @Nullable CommandSourceStack commandSource, String kitName) {
-		if (Variables.starterGearEntries.isEmpty()) {
+		if (Variables.starterGearEntries.isEmpty() || player.isRemoved()) {
 			return null;
 		}
 
@@ -102,8 +107,7 @@ public class StarterGearFunctions {
 
 		String kitGearString = "";
 		if (kitName.isEmpty()) {
-			String[] allKitNames = Variables.starterGearEntries.keySet().toArray(new String[0]);
-			String randomKitName = allKitNames[GlobalVariables.random.nextInt(allKitNames.length)];
+			String randomKitName = getWeightedRandomKitName();
 
 			if (!Variables.starterGearEntries.containsKey(randomKitName)) {
 				Constants.logger.warn(Constants.logPrefix + "Unable to find a starter kit to give with the name '{}'.", randomKitName);
@@ -141,6 +145,10 @@ public class StarterGearFunctions {
 			}
 		}
 
+		if (!toAddAfter.isEmpty()) {
+			player.getInventory().clearContent();
+		}
+
 		GearFunctions.setPlayerGearFromGearString(player, kitGearString, ConfigHandler.usePotionEffectsInStarterKit);
 
 		if (!toAddAfter.isEmpty()) {
@@ -154,21 +162,37 @@ public class StarterGearFunctions {
 		}
 
 		StarterCheckFunctions.addPlayerToTrackingMap(player);
+		rememberReceivedKit(player, kitName);
 
-		Dispatcher.sendToClient(new ToClientSelectFirstSlotPacket(), (ServerPlayer)player);
+		ServerPlayer serverPlayer = (ServerPlayer)player;
+		serverPlayer.inventoryMenu.sendAllDataToRemote();
+
+		runKitCommands(serverPlayer, kitName);
+		runCommandsAtPlayer(serverPlayer, CuriosTrinketsCompat.getModSlotCommands(serverPlayer.level(), Variables.starterKitModSlotGear.getOrDefault(kitName, "")));
+
+		Dispatcher.sendToClient(new ToClientSelectFirstSlotPacket(), serverPlayer);
 		return kitName;
 	}
 
 	public static String createStarterKitFile(Player player, String kitName, boolean adding) {
 		String playerGearString = GearFunctions.getGearStringFromPlayer(player, ConfigHandler.usePotionEffectsInStarterKit);
 
+		String modSlotGearString = CuriosTrinketsCompat.getModSlotGearStringFromPlayer(player);
+		if (!modSlotGearString.isEmpty()) {
+			playerGearString += "\n" + modSlotGearString;
+		}
+
 		if (!adding) {
 			moveAllKitsToInactive();
 		}
 
 		if (kitName.isEmpty()) {
-			File[] files = Util.configKitDir.listFiles((File pathname) -> pathname.getName().endsWith(".txt"));
-			kitName = "Kit_" + (files.length+1);
+			int kitNumber = 1;
+			while (new File(Util.configKitDir, "Kit_" + kitNumber + ".txt").exists() || new File(Util.configInactiveKitDir, "Kit_" + kitNumber + ".txt").exists()) {
+				kitNumber += 1;
+			}
+
+			kitName = "Kit_" + kitNumber;
 		}
 
 		PrintWriter writer = null;
@@ -259,6 +283,7 @@ public class StarterGearFunctions {
 
 	public static void processKitFiles() {
 		Variables.starterGearEntries = new HashMap<>();
+		Variables.starterKitModSlotGear = new HashMap<>();
 
 		try {
 			File[] files = Util.configKitDir.listFiles((File pathname) -> pathname.getName().endsWith(".txt"));
@@ -284,20 +309,37 @@ public class StarterGearFunctions {
 
 			for (File file : files) {
 				String kitName = file.getName().replace(".txt", "");
-				String gearString = Files.readString(Paths.get(file.getAbsolutePath()));
-				Variables.starterGearEntries.put(kitName, gearString);
+				String kitFileContent = Files.readString(Paths.get(file.getAbsolutePath()));
+				Variables.starterGearEntries.put(kitName, CuriosTrinketsCompat.getGearStringWithoutModSlots(kitFileContent));
+
+				String modSlotGearString = CuriosTrinketsCompat.getModSlotGearString(kitFileContent);
+				if (!modSlotGearString.isEmpty()) {
+					Variables.starterKitModSlotGear.put(kitName, modSlotGearString);
+				}
 
 				File matchingKitDescriptionFile = new File(Util.configDescriptionPath + File.separator + kitName + ".txt");
 				if (!matchingKitDescriptionFile.isFile()) {
 					PrintWriter descriptionWriter = new PrintWriter(Util.configDescriptionPath + File.separator + kitName + ".txt", StandardCharsets.UTF_8);
 
-					descriptionWriter.print("You can edit this description in ./config/serilum/starterkit/description/" + kitName + ".txt!");
+					descriptionWriter.print("You can edit this description in ./config/serilum/starterkit/descriptions/" + kitName + ".txt!");
 
 					descriptionWriter.close();
+				}
+
+				File matchingKitCommandFile = new File(Util.configCommandPath + File.separator + kitName + ".txt");
+				if (!matchingKitCommandFile.isFile()) {
+					PrintWriter commandWriter = new PrintWriter(Util.configCommandPath + File.separator + kitName + ".txt", StandardCharsets.UTF_8);
+
+					commandWriter.println("# Commands that run when a player receives the '" + kitName + "' kit, one per line. Lines starting with # are ignored.");
+					commandWriter.println("# They run as the server at the player's position. @s is the player, and %s is replaced with the player's name.");
+					commandWriter.print("# For example: tag @s add " + kitName.toLowerCase());
+
+					commandWriter.close();
 				}
 			}
 
 			processKitDescriptionFiles();
+			processKitCommandFiles();
 		}
 		catch (Exception ex) {
 			Constants.logger.warn(Constants.logPrefix + "Unable to process the starter kit files.");
@@ -313,6 +355,123 @@ public class StarterGearFunctions {
 			String kitName = file.getName().replace(".txt", "");
 			String kitDescription = Files.readString(Paths.get(file.getAbsolutePath()));
 			Variables.starterKitDescriptions.put(kitName.toLowerCase(), kitDescription);
+		}
+	}
+
+	private static void processKitCommandFiles() throws IOException {
+		Variables.starterKitCommands = new HashMap<>();
+
+		File[] files = Util.configCommandDir.listFiles((File pathname) -> pathname.getName().endsWith(".txt"));
+		for (File file : files) {
+			String kitName = file.getName().replace(".txt", "");
+
+			List<String> kitCommands = new ArrayList<>();
+			for (String line : Files.readAllLines(Paths.get(file.getAbsolutePath()))) {
+				String kitCommand = line.strip();
+				if (kitCommand.isEmpty() || kitCommand.startsWith("#")) {
+					continue;
+				}
+
+				kitCommands.add(kitCommand);
+			}
+
+			Variables.starterKitCommands.put(kitName.toLowerCase(), kitCommands);
+		}
+	}
+
+	public static String getWeightedRandomKitName() {
+		List<String> kitNames = getActiveKitNames();
+		HashMap<String, Integer> kitWeights = getConfiguredKitWeights();
+
+		int totalWeight = 0;
+		for (String kitName : kitNames) {
+			totalWeight += kitWeights.getOrDefault(kitName, 1);
+		}
+
+		if (totalWeight <= 0) {
+			return kitNames.get(GlobalVariables.random.nextInt(kitNames.size()));
+		}
+
+		int roll = GlobalVariables.random.nextInt(totalWeight);
+		for (String kitName : kitNames) {
+			roll -= kitWeights.getOrDefault(kitName, 1);
+			if (roll < 0) {
+				return kitName;
+			}
+		}
+
+		return kitNames.get(0);
+	}
+
+	private static HashMap<String, Integer> getConfiguredKitWeights() {
+		HashMap<String, Integer> kitWeights = new HashMap<>();
+
+		for (String rawKitWeight : ConfigHandler.randomKitWeights.split(",")) {
+			String[] kitWeightParts = rawKitWeight.split(":");
+			if (kitWeightParts.length != 2) {
+				continue;
+			}
+
+			String weightString = kitWeightParts[1].strip();
+			if (!NumberFunctions.isNumeric(weightString)) {
+				continue;
+			}
+
+			String kitName = Util.findCorrectKitNameFromInput(kitWeightParts[0].strip());
+			long kitWeight = Math.max(0, Math.min(1000000, (long)Double.parseDouble(weightString)));
+			kitWeights.put(kitName, (int)kitWeight);
+		}
+
+		return kitWeights;
+	}
+
+	private static void rememberReceivedKit(Player player, String kitName) {
+		for (String tag : new ArrayList<>(player.getTags())) {
+			if (tag.startsWith(Constants.receivedKitTagPrefix)) {
+				player.removeTag(tag);
+			}
+		}
+
+		player.addTag(Constants.receivedKitTagPrefix + kitName);
+	}
+
+	public static String getLastReceivedKitName(Player player) {
+		for (String tag : player.getTags()) {
+			if (tag.startsWith(Constants.receivedKitTagPrefix)) {
+				return tag.substring(Constants.receivedKitTagPrefix.length());
+			}
+		}
+
+		return "";
+	}
+
+	private static void runKitCommands(ServerPlayer serverPlayer, String kitName) {
+		List<String> kitCommands = Variables.starterKitCommands.get(kitName.toLowerCase());
+		if (kitCommands == null) {
+			return;
+		}
+
+		String playerName = serverPlayer.getName().getString();
+
+		List<String> playerKitCommands = new ArrayList<>();
+		for (String kitCommand : kitCommands) {
+			playerKitCommands.add(kitCommand.replace("%s", playerName));
+		}
+
+		runCommandsAtPlayer(serverPlayer, playerKitCommands);
+	}
+
+	private static void runCommandsAtPlayer(ServerPlayer serverPlayer, List<String> commands) {
+		if (commands.isEmpty()) {
+			return;
+		}
+
+		ServerLevel serverLevel = serverPlayer.serverLevel();
+		MinecraftServer minecraftServer = serverLevel.getServer();
+		CommandSourceStack commandSource = minecraftServer.createCommandSourceStack().withEntity(serverPlayer).withPosition(serverPlayer.position()).withRotation(serverPlayer.getRotationVector()).withLevel(serverLevel).withSuppressedOutput();
+
+		for (String command : commands) {
+			minecraftServer.getCommands().performPrefixedCommand(commandSource, command);
 		}
 	}
 
@@ -332,7 +491,7 @@ public class StarterGearFunctions {
 			kitNames.add("_all");
 		}
 
-		Collections.sort(kitNames);
+		Util.sortKitNames(kitNames);
 
 		return kitNames;
 	}
@@ -353,7 +512,7 @@ public class StarterGearFunctions {
 			inactiveKitNames.add("_all");
 		}
 
-		Collections.sort(inactiveKitNames);
+		Util.sortKitNames(inactiveKitNames);
 
 		return inactiveKitNames;
 	}
@@ -363,13 +522,13 @@ public class StarterGearFunctions {
 		if (Variables.starterKitDescriptions.containsKey(kitName.toLowerCase())) {
 			kitDescription = Variables.starterKitDescriptions.get(kitName.toLowerCase());
 
-			if (kitDescription.contains("/starterkit/description/")) {
+			if (kitDescription.contains("/starterkit/description")) {
 				kitDescription = "N/A";
 			}
 		}
 
-		MutableComponent nameComponent = Component.literal("Name: ").withStyle(ChatFormatting.DARK_GREEN).append(Component.literal(Util.formatKitName(kitName)).withStyle(ChatFormatting.GRAY));
-		MutableComponent descriptionComponent = Component.literal("Description: ").withStyle(ChatFormatting.DARK_GREEN).append(Component.literal(kitDescription).withStyle(ChatFormatting.GRAY));
+		MutableComponent nameComponent = Component.literal("Name: ").withStyle(ChatFormatting.DARK_GREEN).append(Util.getKitNameComponent(kitName).withStyle(ChatFormatting.GRAY));
+		MutableComponent descriptionComponent = Component.literal("Description: ").withStyle(ChatFormatting.DARK_GREEN).append(Util.getCustomTextComponent(kitDescription).withStyle(ChatFormatting.GRAY));
 
 		if (targetSource != null) {
 			MessageFunctions.sendMessage(targetSource, nameComponent, true);
@@ -383,6 +542,7 @@ public class StarterGearFunctions {
 		StringBuilder kitItems = new StringBuilder();
 		if (Variables.starterGearEntries.containsKey(kitName)) {
 			List<ItemStack> kitItemList = GearFunctions.getItemStackListFromGearString(level, Variables.starterGearEntries.get(kitName));
+			kitItemList.addAll(CuriosTrinketsCompat.getModSlotItems(level, Variables.starterKitModSlotGear.getOrDefault(kitName, "")));
 
 			for (ItemStack itemStack : kitItemList) {
 				if (itemStack.isEmpty()) {
